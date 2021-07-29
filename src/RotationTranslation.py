@@ -2,6 +2,21 @@ import numpy as np
 import math
 
 
+def calculateRotationTranslation(reference_sheet_1_lst, reference_sheet_2_lst):
+    """
+        returns [rotation matrix, translation vector, rotation angle (radians), rotation angle (degree)]
+    """
+    reference_sheet_1_arr = np.array(reference_sheet_1_lst)
+    reference_sheet_2_arr = np.array(reference_sheet_2_lst)
+    rs1_centroid = calculateCentroid(reference_sheet_1_arr)
+    rs2_centroid = calculateCentroid(reference_sheet_2_arr)
+    rot_matrix = calculateRotationMatrix(reference_sheet_1_arr, rs1_centroid, reference_sheet_2_arr, rs2_centroid)
+    translation = calculateTranslation(rot_matrix, rs1_centroid, rs2_centroid)
+    rot_angle_rad = calculateRotationAngle(rot_matrix)
+    rot_angle_deg = math.degrees(rot_angle_rad)
+    return [rot_matrix, translation, rot_angle_rad, rot_angle_deg]
+
+
 def calculateCentroid(points):
     return (np.sum(points, axis=0) / points.shape[0]).transpose()
 
@@ -25,6 +40,11 @@ def calculateTranslation(rotation_matrix, centroid_a, centroid_b):
     return centroid_b - np.matmul(rotation_matrix, centroid_a)
 
 
+def calculateRotatedTranslatedFromPoint(point, rotation_matrix, translation):
+    return np.matmul(rotation_matrix, point) + translation
+
+
+'''
 if __name__ == "__main__":
     c_tmp = [[1, 0], [0, 1], [-1, 0], [0, -1]]
     c2_tmp = [[2, 3], [1, 2], [2, 1], [3, 2]]
@@ -42,3 +62,4 @@ if __name__ == "__main__":
     print(calculateTranslation(rot_matrix, centroid_c, centroid_c2))
     print(np.matmul(calculateRotationMatrix(c, centroid_c, c2, centroid_c2), c.T))
     print(calculateRotationAngle(rot_matrix), math.degrees(calculateRotationAngle(rot_matrix)))
+'''
