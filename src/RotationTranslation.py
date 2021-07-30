@@ -4,17 +4,17 @@ import math
 
 def calculateRotationTranslation(reference_sheet_1_lst, reference_sheet_2_lst):
     """
-        returns [rotation matrix, translation vector, rotation angle (radians), rotation angle (degree)]
+        returns [rotation matrix, translation vector, rotation angle (degree)]
+        rot_matrix * reference_sheet_1 + translation = reference_sheet2
     """
     reference_sheet_1_arr = np.array(reference_sheet_1_lst)
     reference_sheet_2_arr = np.array(reference_sheet_2_lst)
     rs1_centroid = calculateCentroid(reference_sheet_1_arr)
     rs2_centroid = calculateCentroid(reference_sheet_2_arr)
-    rot_matrix = calculateRotationMatrix(reference_sheet_1_arr, rs1_centroid, reference_sheet_2_arr, rs2_centroid)
-    translation = calculateTranslation(rot_matrix, rs1_centroid, rs2_centroid)
-    rot_angle_rad = calculateRotationAngle(rot_matrix)
-    rot_angle_deg = math.degrees(rot_angle_rad)
-    return [rot_matrix, translation, rot_angle_rad, rot_angle_deg]
+    rot_matrix = calculateRotationMatrix(reference_sheet_2_arr, rs2_centroid, reference_sheet_1_arr, rs1_centroid)
+    translation = calculateTranslation(rot_matrix, rs2_centroid, rs1_centroid)
+    rot_angle_deg = math.degrees(calculateRotationAngle(rot_matrix))
+    return [rot_matrix, translation, rot_angle_deg]
 
 
 def calculateCentroid(points):
@@ -31,8 +31,7 @@ def calculateRotationMatrix(a, centroid_a, b, centroid_b):
 
 
 def calculateRotationAngle(rotation_matrix):
-    if math.acos(rotation_matrix[0, 0]) != math.asin(rotation_matrix[1, 0]):
-        raise Exception('Wrong calculation of Rotation Matrix (theta)')
+    # may want to throw exceptions, beware of rounding off errors
     return math.acos(rotation_matrix[0, 0])
 
 
@@ -42,24 +41,3 @@ def calculateTranslation(rotation_matrix, centroid_a, centroid_b):
 
 def calculateRotatedTranslatedFromPoint(point, rotation_matrix, translation):
     return np.matmul(rotation_matrix, point) + translation
-
-
-'''
-if __name__ == "__main__":
-    c_tmp = [[1, 0], [0, 1], [-1, 0], [0, -1]]
-    c2_tmp = [[2, 3], [1, 2], [2, 1], [3, 2]]
-    c = np.array(c_tmp)
-    c2 = np.array(c2_tmp)
-
-    centroid_c = calculateCentroid(c)
-    centroid_c2 = calculateCentroid(c2)
-    rot_matrix = calculateRotationMatrix(c, centroid_c, c2, centroid_c2)
-    translation = calculateTranslation(rot_matrix, centroid_c, centroid_c2)
-    rot_angle_rad = calculateRotationAngle(rot_matrix)
-    rot_angle_deg = math.degrees(rot_angle_rad)
-
-    print(rot_matrix)
-    print(calculateTranslation(rot_matrix, centroid_c, centroid_c2))
-    print(np.matmul(calculateRotationMatrix(c, centroid_c, c2, centroid_c2), c.T))
-    print(calculateRotationAngle(rot_matrix), math.degrees(calculateRotationAngle(rot_matrix)))
-'''

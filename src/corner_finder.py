@@ -6,6 +6,7 @@ import math
 from multiprocessing import Pool
 import os
 
+
 def find_ul_offset(ul):
     o_y = -1
     o_x = -1
@@ -20,8 +21,9 @@ def find_ul_offset(ul):
             o_x = x
             break
 
-    return (o_x, o_y) 
-        
+    return o_x, o_y
+
+
 def find_ur_offset(ur):
     o_y = -1
     o_x = -1
@@ -36,7 +38,8 @@ def find_ur_offset(ur):
             o_x = ur.shape[1] - x - 1
             break
 
-    return (o_x, o_y)
+    return o_x, o_y
+
 
 def find_ll_offset(ll):
     o_y = -1
@@ -52,7 +55,8 @@ def find_ll_offset(ll):
             o_x = x
             break
 
-    return (o_x, o_y)
+    return o_x, o_y
+
 
 def find_lr_offset(lr):
     o_y = -1
@@ -68,7 +72,8 @@ def find_lr_offset(lr):
             o_x = lr.shape[1] - x - 1
             break
 
-    return (o_x, o_y)
+    return o_x, o_y
+
 
 def count_sum(sub_img, corner, pos):
     corner_w = corner.shape[1]
@@ -78,7 +83,8 @@ def count_sum(sub_img, corner, pos):
     n = corner_h * corner_w
     csum /= n
 
-    return (csum, pos)  
+    return csum, pos
+
 
 def img_iter(img, corner, roi):
     img_w = img.shape[1]
@@ -100,6 +106,7 @@ def img_iter(img, corner, roi):
             yield img[ih:ih + corner_h, iw:iw + corner_w], corner, (iw, ih)
     # print("img iter prepared")            
 
+
 def find_corner(img, corner, roi):
     smallest_sum = math.inf
     corner_pos = (-1,-1)
@@ -115,6 +122,7 @@ def find_corner(img, corner, roi):
             corner_pos = pos        
     return corner_pos, smallest_sum
 
+
 def print_roi(img, roi, path):
     img_w = img.shape[1]
     img_h = img.shape[0]
@@ -129,6 +137,7 @@ def print_roi(img, roi, path):
     print(f"{path} has shape {roi_img.shape}")
 
     cv2.imwrite(path, roi_img)
+
 
 def find_corners(boegen_path, masks_path, rois):
     if not os.path.exists(boegen_path):
@@ -210,6 +219,7 @@ def find_corners(boegen_path, masks_path, rois):
         print(f"[{i} / {len(boegen)}]: Corners detected on {path_evaluation}. Corners are {(ul_pos, ur_pos, ll_pos, lr_pos)}")
     return corners
 
+
 def draw_corners_n_rois(corners, vis_path, rois):
     for i in corners.items():
         f = i[0]
@@ -236,8 +246,8 @@ def draw_corners_n_rois(corners, vis_path, rois):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("-b", "--boegen_path", default="data/boegen", type=str, help="Path to evaluations folder")
-    parser.add_argument("-m", "--masks_path", default="data/masks", type=str, help="Path to masks folder")
+    parser.add_argument("-b", "--boegen_path", default="../data/boegen", type=str, help="Path to evaluations folder")
+    parser.add_argument("-m", "--masks_path", default="../data/masks", type=str, help="Path to masks folder")
     parser.add_argument("-v", "--vis_path", type=str, help="Debug corners detection. Path to folder")
     opt = parser.parse_args()
 
