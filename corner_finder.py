@@ -5,6 +5,7 @@ import numpy as np
 import math
 from multiprocessing import Pool
 import os
+import json
 
 def find_ul_offset(ul):
     o_y = -1
@@ -164,14 +165,6 @@ def find_corners(boegen_path, masks_path, rois):
 
     corners = {}
 
-    test_dir = os.path.join(os.path.dirname(boegen_path), "test")
-    
-    if os.path.exists(test_dir):
-        for f in os.listdir(test_dir):
-            os.remove(os.path.join(test_dir, f))
-        os.rmdir(test_dir)
-    os.mkdir(test_dir)
-
     i = 0
     for path_evaluation in boegen:
         evaluation = cv2.imread(path_evaluation, cv2.IMREAD_GRAYSCALE)
@@ -192,30 +185,34 @@ def find_corners(boegen_path, masks_path, rois):
         # print(f"detected pos for lr: {lr_pos} in: {-endll + endlr} sec")
         # print(f"total time: {-start + endlr} sec")
 
-        evaluation = cv2.cvtColor(evaluation, cv2.COLOR_GRAY2RGB)
+        # evaluation = cv2.cvtColor(evaluation, cv2.COLOR_GRAY2RGB)
 
         ul_pos = (ul_pos[0] + ul_o[0], ul_pos[1] + ul_o[1])
         ur_pos = (ur_pos[0] + ur_o[0], ur_pos[1] + ur_o[1])
         ll_pos = (ll_pos[0] + ll_o[0], ll_pos[1] + ll_o[1])
         lr_pos = (lr_pos[0] + lr_o[0], lr_pos[1] + lr_o[1])
 
-        evaluation_marked = cv2.circle(evaluation, ul_pos, radius=15, color=(0, 0, 255), thickness=3)
-        evaluation_marked = cv2.circle(evaluation, ur_pos, radius=15, color=(0, 255, 0), thickness=3)
-        evaluation_marked = cv2.circle(evaluation, ll_pos, radius=15, color=(255, 0, 0), thickness=3)
-        evaluation_marked = cv2.circle(evaluation, lr_pos, radius=15, color=(0, 0, 0), thickness=3)
-
-        cv2.imwrite(os.path.join(test_dir, path_evaluation), evaluation_marked)
         corners[path_evaluation] = (ul_pos, ur_pos, ll_pos, lr_pos)
         i += 1
-        print(f"[{i} / {len(boegen)}]: Corners detected on {path_evaluation}. Corners are {(ul_pos, ur_pos, ll_pos, lr_pos)}")
+        # print(f"[{i} / {len(boegen)}]: Corners detected on {path_evaluation}. Corners are {(ul_pos, ur_pos, ll_pos, lr_pos)}")
+        print(f"[{i} / {len(boegen)}]: Corners detected on {path_evaluation}")
     return corners
 
 def draw_corners_n_rois(corners, vis_path, rois):
+    if os.path.exists(vis_path):
+        raise Exception(f"Debug path invalid. Dir {vis_path} already exists")
+    else:
+        os.mkdir(vis_path)
+        
+
     for i in corners.items():
         f = i[0]
         cs = i[1]
 
         evaluation = cv2.imread(f)
+        if evaluation is None:
+            print(f"ERROR: wrong debug corners path: {f}")
+            return 
 
         for corner in cs:
             evaluation = cv2.circle(evaluation, corner, radius=15, color=(0, 0, 255), thickness=3)
@@ -239,14 +236,18 @@ if __name__ == '__main__':
     parser.add_argument("-b", "--boegen_path", default="data/boegen", type=str, help="Path to evaluations folder")
     parser.add_argument("-m", "--masks_path", default="data/masks", type=str, help="Path to masks folder")
     parser.add_argument("-v", "--vis_path", type=str, help="Debug corners detection. Path to folder")
+    parser.add_argument("-r", "--roi", type=str, help="Path to file containing roi")
     opt = parser.parse_args()
 
+    f = open(opt.roi)
+    roi = json.load(f)
+
     # lux, luy, w, h 
-    ul_roi = (0.3, 0.1, 0.2, 0.2)
-    ur_roi = (0.75, 0.1, 0.25, 0.2)
-    # ll_roi = (0, 0.85, 0.2, 0.15)
-    ll_roi = (0.3, 0.85, 0.2, 0.15)
-    lr_roi = (0.85, 0.8, 0.15, 0.2)
+    ul_roi = roi["ul"]
+    ur_roi = roi["ur"]
+    
+    ll_roi = roi["ll"]
+    lr_roi = roi["lr"]
 
     rois = (ul_roi, ur_roi, ll_roi, lr_roi)
 
