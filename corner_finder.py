@@ -8,6 +8,14 @@ import os
 import json
 
 def find_ul_offset(ul):
+    '''
+        Find ul point offset on img
+        
+        Args: 
+            ul: img with ul corner 
+        Returns:
+            corner
+    '''
     o_y = -1
     o_x = -1
 
@@ -24,6 +32,14 @@ def find_ul_offset(ul):
     return (o_x, o_y) 
         
 def find_ur_offset(ur):
+    '''
+        Find ur point offset on img
+        
+        Args: 
+            ur: img with ur corner 
+        Returns:
+            corner
+    '''
     o_y = -1
     o_x = -1
 
@@ -40,6 +56,14 @@ def find_ur_offset(ur):
     return (o_x, o_y)
 
 def find_ll_offset(ll):
+    '''
+        Find ll point offset on img
+        
+        Args: 
+            ll: img with ll corner 
+        Returns:
+            corner
+    '''
     o_y = -1
     o_x = -1
 
@@ -56,6 +80,14 @@ def find_ll_offset(ll):
     return (o_x, o_y)
 
 def find_lr_offset(lr):
+    '''
+        Find lr point offset on img
+        
+        Args: 
+            lr: img with lr corner 
+        Returns:
+            corner
+    '''
     o_y = -1
     o_x = -1
 
@@ -72,6 +104,17 @@ def find_lr_offset(lr):
     return (o_x, o_y)
 
 def count_sum(sub_img, corner, pos):
+    '''
+        Count intersection sum of sub_img with corner
+        
+        Args: 
+            sub_img: part of boegen img 
+            corner: corner img
+            pos: identifier of sub_img
+        Returns:
+            c_sum: counted sum
+            pos: identifier of sub_img
+    '''
     corner_w = corner.shape[1]
     corner_h = corner.shape[0]
     csum = 0
@@ -82,6 +125,18 @@ def count_sum(sub_img, corner, pos):
     return (csum, pos)  
 
 def img_iter(img, corner, roi):
+    '''
+        Generate iterator over subimages in roi, using corner shape
+        
+        Args: 
+            img: boegen img 
+            corner: corner img
+            roi: (x, y, w, h)
+        Returns:
+            subimage: nex sub image
+            corner: corner img
+            pos: identifier of sub_img
+    '''
     img_w = img.shape[1]
     img_h = img.shape[0]
     
@@ -98,6 +153,16 @@ def img_iter(img, corner, roi):
             yield img[ih:ih + corner_h, iw:iw + corner_w], corner, (iw, ih)
 
 def find_corner(img, corner, roi):
+    '''
+        Find cornerss described with masks on boegen using rois
+        
+        Args: 
+            img: boegen
+            corner: img of corner to detect on boegen 
+            roi: (x, y, w, h)
+        Returns:
+            corner_pos: (x, y)
+    '''
     smallest_sum = math.inf
     corner_pos = (-1,-1)
 
@@ -110,22 +175,17 @@ def find_corner(img, corner, roi):
             corner_pos = pos        
     return corner_pos
 
-def print_roi(img, roi, path):
-    img_w = img.shape[1]
-    img_h = img.shape[0]
-    
-    roi_offset_x = (int)(roi[0] * img_w)
-    roi_offset_y = (int)(roi[1] * img_h)
-    roi_width = (int)(roi[2] * img_w)
-    roi_height = (int)(roi[3] * img_h)
-
-    roi_img = img[roi_offset_y:roi_offset_y + roi_height, roi_offset_x: roi_offset_x + roi_width]
-    
-    print(f"{path} has shape {roi_img.shape}")
-
-    cv2.imwrite(path, roi_img)
-
 def find_corners(boegen_path, masks_path, rois):
+    '''
+        Find corners described with masks on boegen using rois
+        
+        Args: 
+            boegen_path: path to dir with boegens
+            masks_path: path to dir with masks, that describe corners
+            rois: rois in shape (x, y, w, h)
+        Returns:
+            corners: detected corners of shape path_boegen:[ul, ur, ll, lr]
+    '''
     if not os.path.exists(boegen_path):
         raise Exception(f"Boegen folder {boegen_path} doesn't exist")
 
@@ -180,6 +240,17 @@ def find_corners(boegen_path, masks_path, rois):
     return corners
 
 def draw_corners_n_rois(corners, vis_path, rois):
+    '''
+        Debug function. Saves images with marked rois and detected corners
+        
+        Args: 
+            corners: detected corners
+            vis_path: path where debug images will be saved
+            rois: rois in shape (x, y, w, h)
+        Returns:
+            c_sum: counted sum
+            pos: identifier of sub_img
+    '''
     if os.path.exists(vis_path):
         raise Exception(f"Debug path invalid. Dir {vis_path} already exists")
     else:
