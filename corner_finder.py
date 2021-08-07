@@ -93,13 +93,9 @@ def img_iter(img, corner, roi):
     roi_width = (int)(roi[2] * img_w)
     roi_height = (int)(roi[3] * img_h)
 
-    # print(f"{roi_offset_x, img_w - corner_w + 1, roi_width, roi_offset_y, img_h - corner_h + 1, roi_height}")
-    # print(f"shape {img.shape}")
     for ih in range(roi_offset_y, roi_offset_y + roi_height - corner_h + 1):
         for iw in range(roi_offset_x, roi_offset_x + roi_width - corner_w + 1):
-            # print(f"{ih, iw, corner_h, corner_w, img_h - corner_h + 1 - roi_height, img_w - corner_w + 1 - roi_width}")
             yield img[ih:ih + corner_h, iw:iw + corner_w], corner, (iw, ih)
-    # print("img iter prepared")            
 
 def find_corner(img, corner, roi):
     smallest_sum = math.inf
@@ -108,13 +104,11 @@ def find_corner(img, corner, roi):
     with Pool() as pool:
         sums = list(pool.starmap(count_sum, img_iter(img, corner, roi)))
 
-    # print(f"sums counted {len(sums)}")
-
     for csum, pos in sums:
         if csum < smallest_sum:
             smallest_sum = csum
             corner_pos = pos        
-    return corner_pos, smallest_sum
+    return corner_pos
 
 def print_roi(img, roi, path):
     img_w = img.shape[1]
@@ -169,23 +163,10 @@ def find_corners(boegen_path, masks_path, rois):
     for path_evaluation in boegen:
         evaluation = cv2.imread(path_evaluation, cv2.IMREAD_GRAYSCALE)
 
-        # start = time.perf_counter()
-        ul_pos, csum_ul = find_corner(evaluation, ul, rois[0])
-        # endul = time.perf_counter()
-        ur_pos, csum_ur = find_corner(evaluation, ur, rois[1])
-        # endur = time.perf_counter()
-        ll_pos, csum_ll = find_corner(evaluation, ll, rois[2])
-        # endll = time.perf_counter()
-        lr_pos, csum_lr = find_corner(evaluation, lr, rois[3])
-        # endlr = time.perf_counter()
-
-        # print(f"detected pos for ul: {ul_pos} in: {-start + endul} sec")
-        # print(f"detected pos for ur: {ur_pos} in: {-endul + endur} sec")
-        # print(f"detected pos for ll: {ll_pos} in: {-endur + endll} sec")
-        # print(f"detected pos for lr: {lr_pos} in: {-endll + endlr} sec")
-        # print(f"total time: {-start + endlr} sec")
-
-        # evaluation = cv2.cvtColor(evaluation, cv2.COLOR_GRAY2RGB)
+        ul_pos = find_corner(evaluation, ul, rois[0])
+        ur_pos = find_corner(evaluation, ur, rois[1])
+        ll_pos = find_corner(evaluation, ll, rois[2])
+        lr_pos = find_corner(evaluation, lr, rois[3])
 
         ul_pos = (ul_pos[0] + ul_o[0], ul_pos[1] + ul_o[1])
         ur_pos = (ur_pos[0] + ur_o[0], ur_pos[1] + ur_o[1])
@@ -237,10 +218,12 @@ if __name__ == '__main__':
     parser.add_argument("-m", "--masks_path", default="data/masks", type=str, help="Path to masks folder")
     parser.add_argument("-v", "--vis_path", type=str, help="Debug corners detection. Path to folder")
     parser.add_argument("-r", "--roi", type=str, help="Path to file containing roi")
+    parser.add_argument("-o", "--output", type=str, help="Output json with detected corners for each boegen", required=True)
     opt = parser.parse_args()
 
     f = open(opt.roi)
     roi = json.load(f)
+    f.close()
 
     # lux, luy, w, h 
     ul_roi = roi["ul"]
@@ -255,6 +238,12 @@ if __name__ == '__main__':
         print("Starting corners detection...")
         start_time = time.perf_counter()
         corners = find_corners(opt.boegen_path, opt.masks_path, rois)
+
+        json_corners = json.dumps(corners)
+        f = open(opt.output, "w")
+        f.write(json_corners)
+        f.close()
+
         finish_time = time.perf_counter()
         print(f"Corners detection is finished in {finish_time - start_time} sec for {len(corners)} Boegen")
 
