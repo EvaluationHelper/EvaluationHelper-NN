@@ -1,4 +1,4 @@
-from src.RotationTranslation import calculateRotationTranslation, calculateRotatedTranslatedFromPoint
+from utils.reference.RotationTranslation import calculateRotationTranslation, calculateRotatedTranslatedFromPoint
 from PIL import Image
 
 
