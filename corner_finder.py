@@ -291,8 +291,8 @@ if __name__ == '__main__':
     parser.add_argument("-b", "--boegen_path", default="data/boegen", type=str, help="Path to evaluations folder")
     parser.add_argument("-m", "--masks_path", default="data/masks", type=str, help="Path to masks folder")
     parser.add_argument("-v", "--vis_path", type=str, help="Debug corners detection. Path to folder")
-    parser.add_argument("-r", "--roi", type=str, help="Path to file containing roi")
-    parser.add_argument("-o", "--output", type=str, help="Output json with detected corners for each boegen", required=True)
+    parser.add_argument("-r", "--roi", type=str, default="data/roi.json", help="Path to file containing roi")
+    parser.add_argument("-o", "--output", type=str, default="data/corners.json", help="Output json with detected corners for each boegen", required=True)
     opt = parser.parse_args()
 
     f = open(opt.roi)
