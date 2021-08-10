@@ -236,13 +236,14 @@ class CornerFinder:
             ll_pos = (ll_pos[0] + ll_o[0], ll_pos[1] + ll_o[1])
             lr_pos = (lr_pos[0] + lr_o[0], lr_pos[1] + lr_o[1])
 
-            corners[path_evaluation] = (ul_pos, ur_pos, ll_pos, lr_pos)
+            # corners[path_evaluation] = (ul_pos, ur_pos, ll_pos, lr_pos)
+            corners[os.path.basename(path_evaluation)] = (ul_pos, ur_pos, ll_pos, lr_pos)
             i += 1
             # print(f"[{i} / {len(boegen)}]: Corners detected on {path_evaluation}. Corners are {(ul_pos, ur_pos, ll_pos, lr_pos)}")
-            print(f"[{i} / {len(boegen)}]: Corners detected on {path_evaluation}")
+            print(f"[{i} / {len(boegen)}]: Corners detected on {os.path.basename(path_evaluation)}")
         return corners
 
-    def draw_corners_n_rois(self, corners, vis_path, rois):
+    def draw_corners_n_rois(self, boegen_path, corners, vis_path, rois):
         '''
             Debug function. Saves images with marked rois and detected corners
             
@@ -261,7 +262,7 @@ class CornerFinder:
             
 
         for i in corners.items():
-            f = i[0]
+            f = os.path.join(boegen_path, i[0])
             cs = i[1]
 
             evaluation = cv2.imread(f)
@@ -323,7 +324,7 @@ if __name__ == '__main__':
         print(f"Corners detection is finished in {finish_time - start_time} sec for {len(corners)} Boegen")
 
         if opt.vis_path:
-            c_finder.draw_corners_n_rois(corners, opt.vis_path, rois)
+            c_finder.draw_corners_n_rois(opt.boegen_path, corners, opt.vis_path, rois)
     except Exception as e:
         print(e)    
 
