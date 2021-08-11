@@ -9,17 +9,15 @@ def train(train_path, batch_size, epochs, learning_rate):
     model = Model()
     
     # Train Loader
-    dataset, dataloader = create_dataloader(opt.train_path, opt.batch_size)
+    dataloader = create_dataloader(opt.train_path, opt.annotaion_path, opt.batch_size)
 
     # Loss 
     compute_loss = ComputeLoss(model)
 
     # Training 
     for epoch in range(opt.epochs):
-        model.train()
 
-        pbar = enumerate(dataloader)
-        for i, (imgs, targets) in pbar: #=================== batch
+        for i, (imgs, targets) in enumerate(dataloader): #=================== batch
 
             # Forward
             pred = model.forward(imgs)  # forward
@@ -28,10 +26,6 @@ def train(train_path, batch_size, epochs, learning_rate):
             # Backward
             model.backward(loss)
 
-            # Optimize 
-            model.step()
-            model.update()
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -39,6 +33,7 @@ if __name__ == '__main__':
     parser.add_argument("-b", "--batch_size", type=int, default=50, help="Num training epochs")
     parser.add_argument("-t", "--train_path", type=str, default="../../data/boxes", help="Num training epochs")
     parser.add_argument("-r", "--learning_rate", type=str, default="../../data/boxes", help="Num training epochs")
+    parser.add_argument("-a", "--annotaion_path", type=str, default="../../data/boxes", help="Num training epochs")
     opt = parser.parse_args()
     
 
