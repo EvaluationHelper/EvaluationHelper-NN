@@ -1,6 +1,7 @@
 import os
 import random
 import cv2
+import numpy as np
 
 class DataLoader():
     def __init__(self, dataset, batch_size):
@@ -21,7 +22,11 @@ class DataLoader():
             img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
             if img is None:
                 raise Exception(f"wrong file path in batch generation(data loader): {path}")
-            batch += [(img, label)]    
+            
+            vec_img = np.reshape(img, (img.shape[0] * img.shape[1]))
+            vec_img /= 255
+
+            batch += [(vec_img, label)]    
         return batch
 
     def __iter__(self):
