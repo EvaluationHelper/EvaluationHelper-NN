@@ -23,13 +23,18 @@ class Model():
         return pred    
 
     def compute_loss(self, pred, targets):
-        return -np.sum(targets * np.log(pred)) - (1 - targets) * np.log(1 - pred)
+        return np.sum(-np.sum(targets * np.log(pred)) - (1 - targets) * np.log(1 - pred))
 
-    def backward(self, loss):
-        pass
+    def find_gradient(self, input, pred, target):
+        dw = np.dot(input, (pred-target).T)
+        db = np.sum(pred-target)
+        return dw, db
 
-    def step(self, learning_rate):
-        pass
+
+    def step(self, learning_rate, dw, db):
+        # gradient descent
+        self.W = self.W - learning_rate * dw
+        self.b = self.b - learning_rate * db 
 
     def save_model(self):
         pass

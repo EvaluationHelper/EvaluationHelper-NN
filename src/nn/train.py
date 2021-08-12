@@ -19,12 +19,13 @@ def train(positive_path, negative_path, batch_size, epochs, learning_rate):
             # Forward
             pred = model.forward(imgs)  # forward
             loss = model.compute_loss(pred, targets) # loss scaled by batch_size
-
+            print(f"training loss: {loss}")
+            
             # Backward
-            model.backward(loss)
+            dw, db = model.find_gradient(imgs, pred, targets)
 
             # Opimization
-            model.step(learning_rate)
+            model.step(learning_rate, dw, db)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
