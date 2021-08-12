@@ -5,19 +5,28 @@ class Model():
         pass
 
     def init_layers(self):
-        self.W = np.random.standard_normal((1600, 2)) / 40
-        self.b = np.random.standard_normal((1600, 1))
+        self.W = np.random.standard_normal((2, 1600)) / 40
+        self.b = np.random.standard_normal((2))
         
     def load_model(self):
         pass
 
-    def forward(self, imgs):
-        pass
+    def sigmoid(self, x):
+
+        z = np.exp(-x)
+        sig = 1 / (1 + z)
+
+        return sig    
+
+    def forward(self, input):
+        pred = self.sigmoid(np.dot(self.W * input) + self.b)
+        return pred    
+
 
     def backward(self, loss):
         pass
 
-    def update(self):
+    def step(self, learning_rate):
         pass
 
     def save_model(self):
