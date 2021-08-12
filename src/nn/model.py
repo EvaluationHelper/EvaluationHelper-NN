@@ -22,6 +22,8 @@ class Model():
         pred = self.sigmoid(np.dot(self.W * input) + self.b)
         return pred    
 
+    def compute_loss(self, pred, targets):
+        return -np.sum(targets * np.log(pred)) - (1 - targets) * np.log(1 - pred)
 
     def backward(self, loss):
         pass

@@ -11,9 +11,6 @@ def train(positive_path, negative_path, batch_size, epochs, learning_rate):
     # Train Loader
     dataloader = create_bin_dataloader(positive_path, negative_path, batch_size)
 
-    # Loss 
-    compute_loss = ComputeLoss(model)
-
     # Training 
     for epoch in range(epochs):
 
@@ -21,7 +18,7 @@ def train(positive_path, negative_path, batch_size, epochs, learning_rate):
 
             # Forward
             pred = model.forward(imgs)  # forward
-            loss = compute_loss(pred, targets)  # loss scaled by batch_size
+            loss = model.compute_loss(pred, targets) # loss scaled by batch_size
 
             # Backward
             model.backward(loss)
