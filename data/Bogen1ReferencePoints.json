@@ -1,9 +1,9 @@
 
-{   
+{   "name": "Bogen1.jpg",
     "referencePoints" : {
         "upperLeft" : [1135, 389],
         "upperRight" : [2353, 389],
-        "bottomLeft" : [76, 2784],
+        "bottomLeft" : [1134, 2784],
         "bottomRight" : [2355, 2782]
     },
 
@@ -29,7 +29,7 @@
             "box5" : {
                 "upperLeft" : [2194, 816],
                 "bottomRight" : [2220, 841]
-            }        
+            }
         },
 
         "question2" : {
@@ -52,7 +52,7 @@
             "box5" : {
                 "upperLeft" : [2194, 906],
                 "bottomRight" : [2220, 931]
-            }      
+            }
         },
 
         "question3" : {
@@ -75,7 +75,7 @@
             "box5" : {
                 "upperLeft" : [2193, 1009],
                 "bottomRight" : [2220, 1034]
-            }       
+            }
         },
 
         "question4" : {
@@ -98,12 +98,12 @@
             "box5" : {
                 "upperLeft" : [2194, 1166],
                 "bottomRight" : [2221, 1192]
-            }       
+            }
         },
 
         "question5" : {
             "box1" : {
-                "upperLeft" : [1258, 1207],
+                "upperLeft" : [1258, 1307],
                 "bottomRight" : [1284, 1331]
             },
             "box2" : {
@@ -121,7 +121,7 @@
             "box5" : {
                 "upperLeft" : [2194, 1304],
                 "bottomRight" : [2220, 1330]
-            }        
+            }
         },
 
         "question6" : {
@@ -144,7 +144,7 @@
             "box5" : {
                 "upperLeft" : [2194, 1440],
                 "bottomRight" : [2221, 1466]
-            }        
+            }
         },
 
         "question7" : {
@@ -167,7 +167,7 @@
             "box5" : {
                 "upperLeft" : [2195, 1630],
                 "bottomRight" : [2221, 1656]
-            }        
+            }
         },
 
         "question8" : {
@@ -190,7 +190,7 @@
             "box5" : {
                 "upperLeft" : [2195, 1748],
                 "bottomRight" : [2221, 1774]
-            }        
+            }
         },
 
         "question9" : {
@@ -213,7 +213,7 @@
             "box5" : {
                 "upperLeft" : [2195, 1867],
                 "bottomRight" : [2222, 1894]
-            }        
+            }
         },
 
         "question10" : {
@@ -236,7 +236,7 @@
             "box5" : {
                 "upperLeft" : [2196, 2065],
                 "bottomRight" : [2222, 2091]
-            }       
+            }
         },
 
         "question11" : {
@@ -259,7 +259,7 @@
             "box5" : {
                 "upperLeft" : [2196, 2154],
                 "bottomRight" : [2222, 2180]
-            }        
+            }
         },
 
         "question12" : {
@@ -269,7 +269,7 @@
             },
             "box2" : {
                 "upperLeft" : [1493, 2334],
-                "bottomRight" : [2480, 2830]
+                "bottomRight" : [1519, 2360]
             },
             "box3" : {
                 "upperLeft" : [1726, 2333],
@@ -282,7 +282,7 @@
             "box5" : {
                 "upperLeft" : [2196, 2334],
                 "bottomRight" : [2223, 2360]
-            }       
+            }
         },
 
         "question13" : {
@@ -305,7 +305,7 @@
             "box5" : {
                 "upperLeft" : [2202, 2542],
                 "bottomRight" : [2229, 2568]
-            }        
+            }
         },
 
         "question14" : {
@@ -328,7 +328,7 @@
             "box5" : {
                 "upperLeft" : [2196, 2725],
                 "bottomRight" : [2223, 2751]
-            }        
+            }
         }
     }
-} 
+}
