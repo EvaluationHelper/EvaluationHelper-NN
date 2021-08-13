@@ -69,17 +69,17 @@ def cut_boxes(corners_path):
         print("------------ compSheet ----------")
         for a in sheet.get_reference_points():
             print(a)
+        print("------------ onlyRot ----------")
+        for a in sheet.calculateRotatedTranslatedFromSheet(rot_m, [0, 0]):
+            print(a)
         print("------------ transRot ----------")
         for a in sheet.calculateRotatedTranslatedFromSheet(rot_m, tl):
             print(a)
         """
         image = Image.open(r"../../../data/boegen/" + sheet.get_name())
-        image_rot = image.rotate(rot_a)
-        image_rot_tl = image_rot.transform(image_rot.size, Image.AFFINE,
-                                           (1, 0, tl[0],
-                                            0, 1, tl[1]))
-        image_rot.save("../../../test_rot.jpg")
-        image_rot_tl.save("../../../test.jpg")
+        image_rot_tl = image.transform(image.size, Image.AFFINE,
+                                       (rot_m[0][0], rot_m[0][1], tl[0],
+                                        rot_m[1][0], rot_m[1][1], tl[1]))
 
         for question in reference_sheet.get_questions():
             for box in question.get_boxes():
@@ -90,4 +90,3 @@ def cut_boxes(corners_path):
 
 if __name__ == '__main__':
     cut_boxes("../../../data/corners.json")
-
