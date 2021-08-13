@@ -1,0 +1,6 @@
+Positive total: 5573
+Negative total: 21867
+Train positive: 4458
+Train negative: 17493        
+Test positive: 1115
+Test negative: 4374
