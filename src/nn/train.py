@@ -2,7 +2,6 @@ import numpy as np
 import argparse
 from model import Model
 from dataset import create_bin_dataloader
-from loss import ComputeLoss
 
 def train(positive_path, negative_path, batch_size, epochs, learning_rate):
     # Model

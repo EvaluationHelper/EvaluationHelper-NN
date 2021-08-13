@@ -26,9 +26,17 @@ class Model():
         return np.sum(-np.sum(targets * np.log(pred)) - (1 - targets) * np.log(1 - pred))
 
     def find_gradient(self, input, pred, target):
-        dw = np.dot(input, (pred-target).T)
-        db = np.sum(pred-target)
-        return dw, db
+        # net = np.dot(W, input) + b 
+        dnetdw = input
+        dnetdb = np.ones(2)
+
+        # out = sigmoid(net)        
+        doutdnet = pred * (1 - pred)
+        dlossdout = pred - target
+
+        dlossdw = dlossdout * doutdnet * dnetdw
+        dlossdb = dlossdout * doutdnet * dnetdb
+        return dlossdw, dlossdb
 
 
     def step(self, learning_rate, dw, db):
