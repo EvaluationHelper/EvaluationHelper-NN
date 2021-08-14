@@ -1,4 +1,6 @@
+import json
 import numpy as np
+
 
 class Model():
     def __init__(self, path=""):
@@ -44,5 +46,11 @@ class Model():
         self.W = self.W - learning_rate * dw
         self.b = self.b - learning_rate * db 
 
-    def save_model(self):
-        pass
+    def save_model(self, save_path):
+        f = open(save_path, "w")
+        model_description = dict()
+        model_description["W"] = self.W
+        model_description["b"] = self.b
+        f.write(json.dumps(model_description))
+        f.close()
+        
