@@ -62,8 +62,8 @@ class Model():
     def save_model(self, save_path):
         f = open(save_path, "w")
         model_description = dict()
-        model_description["W"] = self.W.tolist()
-        model_description["b"] = self.b.tolist()
+        model_description["W"] = (self.W.copy()).tolist()
+        model_description["b"] = (self.b.copy()).tolist()
         f.write(json.dumps(model_description))
         f.close()
         

@@ -5,17 +5,32 @@ from model import Model
 import os
 from dataset import create_bin_dataloader
 from test import test
+import json
 
-def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_path):
+def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_path, test_positive, test_negative):
+    # run dir
+    run_name = time.perf_counter_ns()
+    run_dir = os.path.join(runs_path, "run_" + str(run_name))
+    os.mkdir(run_dir)
+
+    train_info = dict()
+    train_info["num epochs"] = epochs
+    train_info["batch size"] = batch_size
+    f = open(os.path.join(run_dir, "train_info.json"), "w")
+    f.write(json.dumps(train_info))
+    f.close()
+
     # Model
     model = Model()
     
+
+
     # Train Loader
     train_dataloader = create_bin_dataloader(positive_path, negative_path, batch_size)
 
     # Training 
     for epoch in range(epochs):
-        print(f"epoch {epoch} ==================")
+        print(f"epoch {epoch} / {epochs}")
         for i, (imgs, targets) in enumerate(train_dataloader): #=================== batch
             # print("new batch ==================")
 
@@ -28,7 +43,7 @@ def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_
                 preds += [pred]
                 batch_loss += loss
                 # print(f"prediction {pred} target {target}")
-            print(f"training: batch {i}/{len(train_dataloader)-1} loss {batch_loss/batch_size}")
+            # print(f"training: batch {i}/{len(train_dataloader)-1} loss {batch_loss/batch_size}")
             
             # Backward
             dW = 0
@@ -44,24 +59,29 @@ def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_
             # Opimization
             model.step(learning_rate, dW, dB)
 
+
     # save_model
-    run_name = time.perf_counter_ns()
-    run_dir = os.path.join(runs_path, "run_" + str(run_name))
-    os.mkdir(run_dir)
     model_path = os.path.join(run_dir, "model.json")
     model.save_model(model_path)
 
+    # test 
+    test(model, test_positive, test_negative, os.path.join(run_dir, "metrics.json"))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-e", "--epochs", type=int, default=30, help="")
     parser.add_argument("-b", "--batch_size", type=int, default=50, help="")
-    parser.add_argument("-p", "--positive_path", type=str, default="", help="")
-    parser.add_argument("-n", "--negative_path", type=str, default="", help="")
+    parser.add_argument("-p", "--positive_path", type=str, default="../../data/dataset/train/work_type_crossed", help="")
+    parser.add_argument("-n", "--negative_path", type=str, default="../../data/dataset/train/work_type_empty", help="")
     parser.add_argument("-r", "--learning_rate", type=float, default=0.1, help="")
     parser.add_argument("--runs", type=str, default="../../data/runs", help="")
+    parser.add_argument("-tp", "--test_positive", default="../../data/dataset/test/work_type_crossed", type=str, help="")
+    parser.add_argument("-tn", "--test_negative", default="../../data/dataset/test/work_type_empty", type=str, help="")
+    
+
+    
     opt = parser.parse_args()
     
 
-    train(opt.positive_path, opt.negative_path, opt.batch_size, opt.epochs, opt.learning_rate, opt.runs)
+    train(opt.positive_path, opt.negative_path, opt.batch_size, opt.epochs, opt.learning_rate, opt.runs, opt.test_positive, opt.test_negative)
     
