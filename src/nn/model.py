@@ -1,18 +1,26 @@
 import json
 import numpy as np
+import os
 
 
 class Model():
     def __init__(self, path=""):
-        self.init_layers()
+        if not path:
+            self.init_layers()
+        else:
+            self.load_model(path)
 
     def init_layers(self):
         self.W = np.random.standard_normal((2, 1600)) / 40
         self.b = np.random.standard_normal((2, 1))
         
-    def load_model(self):
-        pass
-
+    def load_model(self, latest_run_path):
+        f = open(os.path.join(latest_run_path, "model.json"), "r")
+        model_data = json.load(f)
+        self.W = np.array(model_data["W"])
+        self.b = np.array(model_data["b"])
+        f.close()
+        
     def sigmoid(self, x):
         # print(f"DEBUG: x.shape {x.shape}")
         z = np.exp(-x)
