@@ -8,6 +8,20 @@ from test import test
 import json
 
 def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_path, test_positive, test_negative):
+    '''
+    Train & test & save the NN
+    Args: 
+        positive_path : path to train crossed boxes 
+        negative_path : path to train not-crossed boxes
+        batch_size : training batch size
+        epochs : number of training epochs
+        learning_rate : training step rate
+        runs_path : path to save runs information
+        test_positive : path to test crossed boxes
+        test_negative : path to test not-crossed boxes
+    Returns: 
+        ...      
+    '''
     # run dir
     run_name = time.perf_counter_ns()
     run_dir = os.path.join(runs_path, "run_" + str(run_name))
@@ -22,8 +36,6 @@ def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_
 
     # Model
     model = Model()
-    
-
 
     # Train Loader
     train_dataloader = create_bin_dataloader(positive_path, negative_path, batch_size)
@@ -32,7 +44,6 @@ def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_
     for epoch in range(epochs):
         print(f"epoch {epoch} / {epochs}")
         for i, (imgs, targets) in enumerate(train_dataloader): #=================== batch
-            # print("new batch ==================")
 
             # Forward
             preds = []
@@ -42,14 +53,12 @@ def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_
                 loss = model.compute_loss(pred, target) # loss scaled by batch_size
                 preds += [pred]
                 batch_loss += loss
-                # print(f"prediction {pred} target {target}")
-            # print(f"training: batch {i}/{len(train_dataloader)-1} loss {batch_loss/batch_size}")
-            
+                
             # Backward
             dW = 0
             dB = 0
             for img, pred, target in zip(imgs, preds, targets):
-                # print("========================")
+        
                 dw, db = model.find_gradient(img, pred, target)
                 dW += dw
                 dB += db

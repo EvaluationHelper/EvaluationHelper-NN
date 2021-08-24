@@ -4,7 +4,14 @@ import json
 
 
 def test(model : Model, positive_path, negative_path, metrics_path):
-       
+    '''
+    Test the Model of the NN 
+    Args: 
+        model : the model of the NN
+        positive_path : path to test crossed boxes
+        negative_path : path to test not-crossed boxes
+        metrics_path : path to save test metrics
+    '''
     # Test Loader
     test_dataloader = create_bin_dataloader(positive_path, negative_path, 1)
 
@@ -20,7 +27,6 @@ def test(model : Model, positive_path, negative_path, metrics_path):
             print(f"TEST: {i} / {len(test_dataloader)}")
         pred = model.forward(img[0])
         al += model.compute_loss(pred, target[0])
-        # print(f"TEST: shape pred {pred.shape}")
         if pred[0][0] > pred[0][1]:
             if target[0][0] == 1:
                 tn += 1
@@ -37,7 +43,6 @@ def test(model : Model, positive_path, negative_path, metrics_path):
                 p += 1
     al /= len(test_dataloader)
 
-    # print(p, n, tp, tn, fp, fn, al)
     metrics = dict()
     metrics["average loss"] = al
     if tp == 0:
