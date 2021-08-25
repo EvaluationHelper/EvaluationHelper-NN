@@ -78,19 +78,16 @@ def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("-e", "--epochs", type=int, default=30, help="")
-    parser.add_argument("-b", "--batch_size", type=int, default=50, help="")
-    parser.add_argument("-p", "--positive_path", type=str, default="../../data/dataset/train/work_type_crossed", help="")
-    parser.add_argument("-n", "--negative_path", type=str, default="../../data/dataset/train/work_type_empty", help="")
-    parser.add_argument("-r", "--learning_rate", type=float, default=0.1, help="")
-    parser.add_argument("--runs", type=str, default="../../data/runs", help="")
-    parser.add_argument("-tp", "--test_positive", default="../../data/dataset/test/work_type_crossed", type=str, help="")
-    parser.add_argument("-tn", "--test_negative", default="../../data/dataset/test/work_type_empty", type=str, help="")
-    
-
+    parser.add_argument("-e", "--epochs", type=int, default=30, help="number of training epochs")
+    parser.add_argument("-b", "--batch_size", type=int, default=50, help="training batch size")
+    parser.add_argument("-p", "--positive_path", type=str, default="../../data/dataset/train/work_type_crossed", help="path to train crossed boxes")
+    parser.add_argument("-n", "--negative_path", type=str, default="../../data/dataset/train/work_type_empty", help="path to train not-crossed boxes")
+    parser.add_argument("-r", "--learning_rate", type=float, default=0.1, help="training step rate")
+    parser.add_argument("--runs", type=str, default="../../data/runs", help="path to save runs information")
+    parser.add_argument("-tp", "--test_positive", default="../../data/dataset/test/work_type_crossed", type=str, help="path to test crossed boxes")
+    parser.add_argument("-tn", "--test_negative", default="../../data/dataset/test/work_type_empty", type=str, help="path to test not-crossed boxes")
     
     opt = parser.parse_args()
-    
 
     train(opt.positive_path, opt.negative_path, opt.batch_size, opt.epochs, opt.learning_rate, opt.runs, opt.test_positive, opt.test_negative)
     
