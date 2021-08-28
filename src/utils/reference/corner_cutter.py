@@ -9,7 +9,6 @@ def __read_sheet_json__(path):
     sheet_json = json.load(file)
     file.close()
 
-    # Todo: not pretty at, all this ugly as hell
     sheet_box_positions = sheet_json.get("boxPositions")
     question_lst = []
     for question_key in sheet_box_positions.keys():
@@ -28,23 +27,19 @@ def __read_sheet_json__(path):
                           *question_lst)
 
 
-def __save_box__(img, box, path_suffix):
+def __save_box__(img, box, path_suffix, box_path='../../../data/boxes/', ext='.jpg'):
     puffer = 20
     box_u_l, box_b_r = box.get_points()
     img_crop = img.crop((box_u_l[0] - puffer, box_u_l[1] - puffer,
                          box_b_r[0] + puffer, box_b_r[1] + puffer))
     img_res = img_crop.resize((40, 40))
-    img_res.save("../../../data/boxes/" + path_suffix + "_" + box.get_name() + ".jpg")
-    print("Saved to ../../../data/boxes/" + path_suffix + "_" + box.get_name() + ".jpg")
-    return None
+
+    path = box_path + path_suffix + "_" + box.get_name() + ext
+    box.set_path(path)
+    img_res.save(path)
 
 
-def __cut_box_single__():
-    return None
-
-
-# acting as main right now
-def cut_boxes(corners_path):
+def cut_boxes(corners_path, sheet_path='../../../data/boegen/'):
     reference_sheet = __read_sheet_json__("../../../data/Bogen1ReferencePoints.json")
     file = open(corners_path)
     corners = json.load(file)
@@ -59,24 +54,7 @@ def cut_boxes(corners_path):
     for sheet in sheet_lst:
         # rotate and translate back to coordinates of ref_sheet1
         rot_m, tl, rot_a = sheet.calculateRotationTranslation(sheet_lst[0])
-        """
-        print(rot_m)
-        print(tl)
-        print(rot_a)
-        print("------------ RefSheet ----------")
-        for a in sheet_lst[0].get_reference_points():
-            print(a)
-        print("------------ compSheet ----------")
-        for a in sheet.get_reference_points():
-            print(a)
-        print("------------ onlyRot ----------")
-        for a in sheet.calculateRotatedTranslatedFromSheet(rot_m, [0, 0]):
-            print(a)
-        print("------------ transRot ----------")
-        for a in sheet.calculateRotatedTranslatedFromSheet(rot_m, tl):
-            print(a)
-        """
-        image = Image.open(r"../../../data/boegen/" + sheet.get_name())
+        image = Image.open(sheet_path + sheet.get_name())
         image_rot_tl = image.transform(image.size, Image.AFFINE,
                                        (rot_m[0][0], rot_m[0][1], tl[0],
                                         rot_m[1][0], rot_m[1][1], tl[1]))
@@ -85,8 +63,4 @@ def cut_boxes(corners_path):
             for box in question.get_boxes():
                 __save_box__(image_rot_tl, box,
                              os.path.splitext(sheet.get_name())[0] + "_" + question.get_name())
-    return None
 
-
-if __name__ == '__main__':
-    cut_boxes("../../../data/corners.json")

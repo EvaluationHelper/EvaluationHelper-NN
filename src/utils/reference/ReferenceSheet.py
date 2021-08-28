@@ -1,6 +1,4 @@
 from src.utils.reference.RotationTranslation import calculateRotationTranslation, calculateRotatedTranslatedFromPoint
-from PIL import Image
-import json
 
 
 class ReferenceSheet:
@@ -61,10 +59,12 @@ class Question:
 
 
 class Box:
-    def __init__(self, name, upper_left, bottom_right):
+    def __init__(self, name, upper_left, bottom_right, path=None, is_checked=None):
         self._name = name
         self._u_l = upper_left
         self._b_r = bottom_right
+        self._path = path
+        self._is_checked = is_checked
 
     def get_name(self):
         return self._name
@@ -72,42 +72,24 @@ class Box:
     def get_points(self):
         return self._u_l, self._b_r
 
+    def get_is_checked(self):
+        return self._is_checked
+
+    def set_is_checked(self, new_is_checked):
+        self._is_checked = new_is_checked
+
+    def set_path(self, new_path):
+        self._path = new_path
+
+    def get_path(self):
+        return self._path
+
     def asdict(self):
         return {'upperLeft': self._u_l,
-                'bottomRight': self._b_r}
+                'bottomRight': self._b_r,
+                'path': self._path,
+                'is_checked': self._is_checked}
 
-
-if __name__ == "__main__":
-
-    # Data from coner_finder.py
-    box1 = Box([0, 1], [1, 0])
-    box2 = Box([2, 1], [3, 0])
-    box3 = Box([4, 1], [5, 0])
-    lst = [box1, box2, box3]
-    question1 = Question('question1', box1, box2, box3)
-    question2 = Question('question2', box3, box2, box1)
-    referenceSheet1 = ReferenceSheet('Bogen1', [1134, 388], [2354, 387], [1133, 2785], [2356, 2783], question1, question2)
-    referenceSheet28 = ReferenceSheet('Bogen28', [1153, 390], [2374, 389], [1151, 2778], [2372, 2781])
-
-    # calculate rotation and translation for which ref1 must be rotated to fit ref28
-    # may need to adjust if the other way around is wanted
-    rot_matrix, translation, rot_angle_deg = referenceSheet1.calculateRotationTranslation(referenceSheet28)
-    print(rot_matrix)
-    print(translation)
-    print(rot_angle_deg)
-    print(json.dumps(referenceSheet1.asdict()))
-    print(json.dumps(referenceSheet28.asdict()))
-
-    image_ref_1 = Image.open(r"../../../data/boegen/Bogen1.jpg")
-    image_ref_28 = Image.open(r"../../../data/boegen/Bogen28.jpg")
-    image_ref_1_rot = image_ref_1.rotate(referenceSheet1.calculateRotationTranslation(referenceSheet28)[2])
-    image_ref_1_rot = image_ref_1_rot.transform(image_ref_1_rot.size, Image.AFFINE,
-                                                (1, 0, translation[0],
-                                                 0, 1, translation[1]))
-
-    #image_ref_1.show()
-    #image_ref_1_rot.show()
-    #image_ref_28.show()
 
 
 
