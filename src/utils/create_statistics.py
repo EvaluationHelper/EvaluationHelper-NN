@@ -32,7 +32,7 @@ class Box:
     def get_statistics(self):
         pp, p, neut, n, nn = self.get_box_statistics()
         size = len(pp + p + neut + n + nn)
-        av = 2 * len(pp) + len(p) + 0 * len(neut) - len(n) - 2 * len(nn)
+        av = (2 * len(pp) + len(p) + 0 * len(neut) - len(n) - 2 * len(nn)) / size
         var = (len(pp) * pow(av - 2, 2)
               + len(p)  * pow(av - 1, 2)
               + len(neut) * pow(av - 0, 2)
