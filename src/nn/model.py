@@ -14,8 +14,8 @@ class Model():
         self.W = np.random.standard_normal((2, 1600)) / 40
         self.b = np.random.standard_normal((2, 1))
         
-    def load_model(self, latest_run_path):
-        f = open(os.path.join(latest_run_path, "model.json"), "r")
+    def load_model(self, model_path):
+        f = open(os.path.join(model_path, "model.json"), "r")
         model_data = json.load(f)
         self.W = np.array(model_data["W"])
         self.b = np.array(model_data["b"])
