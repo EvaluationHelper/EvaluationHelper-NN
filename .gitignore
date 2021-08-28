@@ -137,6 +137,11 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+<<<<<<< HEAD
 
 data/runs/
 *.pyc
+=======
+*.pyc
+*.jpg
+>>>>>>> a5d135e5 (gitignore)
