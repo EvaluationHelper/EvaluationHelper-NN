@@ -1,9 +1,10 @@
 import json
 import re
 
+root = '../../'
 
-#TODO: rename Bogen to Sheet
-class Box:
+
+class StatisticsBox:
     def __init__(self, sheet, question, box, checked):
         self._sheet = sheet
         self._questions = {}
@@ -51,10 +52,10 @@ class Box:
         return lst_unanswered
 
 
-def extractPath(path, src_data="../../data/boxes/", ext=".jpg"):
-    if not path.startswith(src_data):
+def extractPath(path, src_data="data/boxes/", ext=".jpg"):
+    if not path.startswith(root + src_data):
         raise Exception(f"error in json: {path}")
-    p = path.strip(src_data).strip(ext)
+    p = path.strip(root + src_data).strip(ext)
     sheet = int(re.search('Bogen(.*)_question', p).group(1))
     question = int(re.search('_question(.*)_box', p).group(1))
     box = int(re.search('_box(.*)', p).group(1))
@@ -65,8 +66,8 @@ def removeDuplicates(lst):
     return [t for t in (set(tuple(i) for i in lst))]
 
 
-def create_print_statistics(path='../../data/box_evaluated.json'):
-    with open(path) as box_json:
+def create_print_statistics(path='data/box_evaluated.json'):
+    with open(root + path) as box_json:
         data = json.loads(box_json.read())
 
     lst = []
@@ -78,10 +79,10 @@ def create_print_statistics(path='../../data/box_evaluated.json'):
     sheet_lst = []
     for box in sorted(lst):
         if not box[0] in [sheet.get_sheet() for sheet in sheet_lst]:
-            sheet_lst.append(Box(box[0], box[1], box[2], box[3]))
+            sheet_lst.append(StatisticsBox(box[0], box[1], box[2], box[3]))
         else:
             sheet_lst[len(sheet_lst) - 1].add_box(box[1], box[2], box[3])
-    for sheet in sorted(sheet_lst, key=Box.get_sheet):
+    for sheet in sorted(sheet_lst, key=StatisticsBox.get_sheet):
         pp, p, neut, n, nn = sheet.get_box_statistics()
         av, var, size = sheet.get_statistics()
         print('Sheet number: ', sheet.get_sheet())
@@ -96,9 +97,12 @@ def create_print_statistics(path='../../data/box_evaluated.json'):
         if sheet.get_unanswered():
             print('Question was not answered: ', sheet.get_unanswered())
         print('Average:', av)
+        print('Variance:', var)
         print('-----------------------')
 
 
-
+# best worst sheet
+if __name__ == "__main__":
+    create_print_statistics()
 
 
