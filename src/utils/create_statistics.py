@@ -12,6 +12,14 @@ class StatisticsBox:
         self.add_box(question, box, checked)
 
     def add_box(self, question, box, checked):
+        """
+            add box to sheet and checks if question has multiple answers
+
+            Args:
+                question: question to which the box belongs to
+                box: type of box ++, +, 0, -, -- as (1-5)
+                checked: bool box checked
+        """
         if question not in self._questions:
             self._questions[question] = [(box, checked)]
         else:
@@ -23,6 +31,16 @@ class StatisticsBox:
             self._questions.get(question).append((box, checked))
 
     def get_box_statistics(self):
+        """
+            get lists based on answer type
+
+            Returns:
+                pp: list of all questions which are checked ++
+                p: list of all questions which are checked +
+                neut: list of all questions which are checked 0
+                n: list of all questions which are checked -
+                nn: list of all questions which are checked --
+        """
         pp = [q for q in self._questions if (1, 1) in self._questions.get(q)]
         p = [q for q in self._questions if (2, 1) in self._questions.get(q)]
         neut = [q for q in self._questions if (3, 1) in self._questions.get(q)]
@@ -31,6 +49,14 @@ class StatisticsBox:
         return pp, p, neut, n, nn
 
     def get_statistics(self):
+        """
+            get reference numbers for sheet
+
+            Returns:
+                av: average answers of sheet (--:-2, -:-1, 0:0, +:1, ++:2)
+                var: get variance of sheet
+                size: number of answers on sheet
+        """
         pp, p, neut, n, nn = self.get_box_statistics()
         size = len(pp + p + neut + n + nn)
         av = (2 * len(pp) + len(p) + 0 * len(neut) - len(n) - 2 * len(nn)) / size
@@ -52,13 +78,29 @@ class StatisticsBox:
         return lst_unanswered
 
 
-def extractPath(path, src_data="data/boxes/", ext=".jpg"):
-    if not path.startswith(root + src_data):
-        raise Exception(f"error in json: {path}")
-    p = path.strip(root + src_data).strip(ext)
-    sheet = int(re.search('Bogen(.*)_question', p).group(1))
-    question = int(re.search('_question(.*)_box', p).group(1))
-    box = int(re.search('_box(.*)', p).group(1))
+def extractPath(path, path_boxes="data/boxes/", path_sheet="Bogen", path_question="_question", path_box="_box",ext=".jpg"):
+    """
+        searches for int (.*) in a string
+        *root*/*path_boxes*/Bogen(.*)_question(.*)_box(.*).*ext*
+
+        Args:
+            path: full path of box
+            path_boxes: path of all boxes
+            path_sheet: regex path for sheet
+            path_question: regex path for question
+            path_box: regex path for box
+            ext: extension
+        Returns:
+            sheet: sheet number
+            question: question number
+            box: box number
+    """
+    if not path.startswith(root + path_boxes):
+        raise Exception(f"error in json, wrong path: {path}")
+    p = path.strip(root + path_boxes).strip(ext)
+    sheet = int(re.search(path_sheet + '(.*)' + path_question, p).group(1))
+    question = int(re.search(path_question + '(.*)' + path_box, p).group(1))
+    box = int(re.search(path_box + '(.*)', p).group(1))
     return sheet, question, box
 
 
@@ -67,6 +109,18 @@ def removeDuplicates(lst):
 
 
 def create_print_statistics(path='data/box_evaluated.json'):
+    """
+        prints statistics in the form
+            Sheet number
+            Answer types
+            Multiple answers
+            Unanswered
+            Average
+            Variance
+
+        Args:
+            path: path of evaluation result for boxes by NN
+    """
     with open(root + path) as box_json:
         data = json.loads(box_json.read())
 
@@ -99,10 +153,3 @@ def create_print_statistics(path='data/box_evaluated.json'):
         print('Average:', av)
         print('Variance:', var)
         print('-----------------------')
-
-
-# best worst sheet
-if __name__ == "__main__":
-    create_print_statistics()
-
-

@@ -7,6 +7,14 @@ root = "../../../"
 
 
 def __read_sheet_json__(path):
+    """
+        create ReferenceSheet from json containing question and box positions
+
+        Args:
+            path: path to the sheet
+        Returns:
+            object of class src.utils.reference.ReferenceSheet.ReferenceSheet
+    """
     file = open(path)
     sheet_json = json.load(file)
     file.close()
@@ -29,7 +37,19 @@ def __read_sheet_json__(path):
                           *question_lst)
 
 
-def __save_box__(img, box, path_suffix, box_path='data/boxes/', ext='.jpg'):
+def __save_box__(img, box, path_suffix, box_path='data/boxes/', ext='.jpg', puffer=20, size=40):
+    """
+        crops image based on box coordinates, resizes and saves it
+
+        Args:
+            img: large image
+            box: object of class src.utils.reference.ReferenceSheet.Box
+            path_suffix: suffix for savename
+            box_path: path to boxes
+            ext: extension type
+            puffer: crop image with puffer around corners
+            size: resize size
+    """
     puffer = 20
     box_u_l, box_b_r = box.get_points()
     img_crop = img.crop((box_u_l[0] - puffer, box_u_l[1] - puffer,
@@ -42,6 +62,14 @@ def __save_box__(img, box, path_suffix, box_path='data/boxes/', ext='.jpg'):
 
 
 def cut_boxes(corners_path, sheet_path='data/boegen/', reference_json_path='data/Bogen1ReferencePoints.json'):
+    """
+        rotates, translates, cuts and saves boxes based on corner data and reference sheet data
+
+        Args:
+            corners_path: path to json containing all sheets with their corners
+            sheet_path: path to sheet folder
+            reference_json_path: path to reference json
+    """
     reference_sheet = __read_sheet_json__(root + reference_json_path)
     file = open(corners_path)
     corners = json.load(file)
@@ -52,7 +80,6 @@ def cut_boxes(corners_path, sheet_path='data/boegen/', reference_json_path='data
                                 corners.get(key)[2], corners.get(key)[3])
                  for key in corners.keys()]
 
-    # do all the work here
     for sheet in sheet_lst:
         # rotate and translate back to coordinates of ref_sheet1
         rot_m, tl, rot_a = sheet.calculateRotationTranslation(sheet_lst[0])
