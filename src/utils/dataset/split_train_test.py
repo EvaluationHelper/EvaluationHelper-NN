@@ -2,6 +2,17 @@ import os
 import argparse
 
 def split_train_test(path_pos, path_neg, path_train, path_test, coef):
+    '''
+    Split dataset into train and test parts
+    Args: 
+        path_pos : path to crossed boxes 
+        path_neg : path to not-crossed boxes
+        path_train : train folder path
+        path_test : test folder path
+        coef : part [0; 1] of data that would be used as train data
+    Returns: 
+        ...      
+    '''
     if not os.path.exists(path_pos) or not os.path.exists(path_neg):
         raise Exception(f"wrong dataset path") 
     if os.path.exists(path_train):
@@ -48,11 +59,11 @@ def split_train_test(path_pos, path_neg, path_train, path_test, coef):
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("-p", "--path_pos", type=str, default="../../../data/dataset/work_type_crossed", help="Path to evaluations folder")
-    parser.add_argument("-n", "--path_neg", type=str, default="../../../data/dataset/work_type_empty", help="Path to masks folder")
-    parser.add_argument("-tr", "--path_train", type=str, default="../../../data/dataset/train", help="Debug corners detection. Path to folder")
-    parser.add_argument("-te", "--path_test", type=str, default="../../../data/dataset/test", help="Path to file containing roi")
-    parser.add_argument("-c", "--coef", type=float, help="Output json with detected corners for each boegen", required=True)
+    parser.add_argument("-p", "--path_pos", type=str, default="../../../data/dataset/work_type_crossed", help="path to train crossed boxes")
+    parser.add_argument("-n", "--path_neg", type=str, default="../../../data/dataset/work_type_empty", help="path to train not-crossed boxes")
+    parser.add_argument("-tr", "--path_train", type=str, default="../../../data/dataset/train", help="Train folder path")
+    parser.add_argument("-te", "--path_test", type=str, default="../../../data/dataset/test", help="Test folder path")
+    parser.add_argument("-c", "--coef", type=float, help="Part [0; 1] of data that would be used as train data", required=True)
     opt = parser.parse_args()    
 
     split_train_test(opt.path_pos, opt.path_neg, opt.path_train, opt.path_test, opt.coef)

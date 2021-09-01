@@ -11,7 +11,6 @@ class DataLoader():
        
 
     def __len__(self):
-        # print(len(self.dataset) //  self.bath_size)
         return len(self.dataset) // self.bath_size   
 
     def __next__(self):
@@ -38,6 +37,14 @@ class DataLoader():
     
 
 def create_bin_dataloader(pos_data_path, neg_data_path, batch_size):
+    '''
+    Create dataloader for crossed/not-crossed dataset, to iterate over batches 
+    Args: 
+        pos_data_path : path to crossed boxes
+        neg_data_path : path to not-crossed boxes
+    Returns: 
+        dataloader : iterable      
+    '''
     if not os.path.exists(pos_data_path):
         raise Exception(f"wrong pos_data_path data loader: {pos_data_path}")
         
