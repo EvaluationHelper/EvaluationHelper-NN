@@ -1,11 +1,16 @@
-from model import Model
+from nn.model import Model
 import cv2
 import os
 import numpy as np
 import json
 
-def get_annotation(boxes_path='../../data/boxes/'):
-
+def create_annotation(boxes_path='../../data/boxes/'):
+    '''''
+    predicts if boxes are checked with NN model
+    creates a dictionary with information about all boxes:
+        Keys: path and name to cut-out box (string)
+        Values: 1 if checked, 0 if unchecked
+    '''''
     images = dict()
     annotation  = []
 
@@ -23,7 +28,7 @@ def get_annotation(boxes_path='../../data/boxes/'):
 
     for path in images:
         box_dict = dict()        
-        prediction = model.forward(images[path])
+        prediction = model.forward(images[path]) #make prediction with NN
         ticked_state = int(round(prediction[0][1]))
         box_dict[path] = ticked_state
         annotation.append(box_dict)
@@ -32,6 +37,9 @@ def get_annotation(boxes_path='../../data/boxes/'):
 
 
 def save_annotaion(annotation, annotation_dir='../../data'):
+    '''''
+    Saves dictionary a a json file
+    '''''
     annotations_path = os.path.join(annotation_dir, "annotation.json")
     f = open(annotations_path,"w")
     f.write(json.dumps(annotation))
@@ -40,13 +48,11 @@ def save_annotaion(annotation, annotation_dir='../../data'):
 
 
 if __name__ == '__main__':
-    
     '''''
     model.json for the trained model should be places in /data/
     pictures of boxes are saved in /data/boxes/
     annotations.json contains path with name of each box and corresponding boolean (ticked = 1, unticked = 0)
     '''''
-
     model = Model('../../data/')
-    annotation = get_annotation()
+    annotation = create_annotation()
     save_annotaion(annotation)
