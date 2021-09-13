@@ -1,6 +1,5 @@
 import argparse
-import cv2
-from PIL import Image, ImageOps, ImageDraw
+from PIL import Image, ImageDraw
 import time
 import numpy as np
 import math
@@ -217,21 +216,10 @@ class CornerFinder:
             if not os.path.exists(mask):
                 raise Exception(f"File {mask} doesn't exist")
 
-        # print("loading rois")
         ul = Image.open(masks[0])
-        # print(f"img shape {np.array(img).shape}")
-        # print(f"img conv shape {np.array(img.convert('RGB')).shape}")
-        # print(f"img shape {np.array(img).shape}")
-        # ul = ImageOps.grayscale(img)
-        
         ur = Image.open(masks[1])
         ll = Image.open(masks[2])
         lr = Image.open(masks[3])
-        # ul = cv2.imread(masks[0], cv2.IMREAD_GRAYSCALE)
-        # ur = cv2.imread(masks[1], cv2.IMREAD_GRAYSCALE)
-        # ll = cv2.imread(masks[2], cv2.IMREAD_GRAYSCALE)
-        # lr = cv2.imread(masks[3], cv2.IMREAD_GRAYSCALE)
-
 
         ul_o = self.__find_ul_offset(ul)
         ur_o = self.__find_ur_offset(ur)
