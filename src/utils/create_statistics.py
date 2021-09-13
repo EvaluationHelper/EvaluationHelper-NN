@@ -108,7 +108,7 @@ def removeDuplicates(lst):
     return [t for t in (set(tuple(i) for i in lst))]
 
 
-def create_print_statistics(path='data/box_evaluated.json'):
+def create_print_statistics(root = '../../', path='data/box_evaluated.json'):
     """
         prints statistics in the form
             Sheet number

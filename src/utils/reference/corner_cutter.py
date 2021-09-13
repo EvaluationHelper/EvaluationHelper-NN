@@ -1,6 +1,6 @@
 import json
 import os.path
-from src.utils.reference.ReferenceSheet import *
+from utils.reference.ReferenceSheet import *
 from PIL import Image
 
 root = "../../../"

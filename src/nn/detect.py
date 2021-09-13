@@ -4,7 +4,7 @@ import os
 import numpy as np
 import json
 
-def create_annotation(boxes_path='../../data/boxes/'):
+def create_annotation(model, boxes_path='../../data/boxes/'):
     '''''
     predicts if boxes are checked with NN model
     creates a dictionary with information about all boxes:
@@ -54,5 +54,5 @@ if __name__ == '__main__':
     annotations.json contains path with name of each box and corresponding boolean (ticked = 1, unticked = 0)
     '''''
     model = Model('../../data/')
-    annotation = create_annotation()
+    annotation = create_annotation(model)
     save_annotaion(annotation)
