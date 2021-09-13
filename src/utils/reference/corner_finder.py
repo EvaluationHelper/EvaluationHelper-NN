@@ -1,5 +1,6 @@
 import argparse
 import cv2
+from PIL import Image, ImageOps, ImageDraw
 import time
 import numpy as np
 import math
@@ -31,7 +32,7 @@ class CornerFinder:
 
         return (csum, pos)  
 
-    def __find_ul_offset(self, ul):
+    def __find_ul_offset(self, _ul):
         '''
             Find ul point offset on img
             
@@ -42,6 +43,7 @@ class CornerFinder:
         '''
         o_y = -1
         o_x = -1
+        ul = np.array(_ul)
 
         for y in range(ul.shape[0]):
             if ul[y, ul.shape[1] - 1] == 0:
@@ -55,7 +57,7 @@ class CornerFinder:
 
         return (o_x, o_y) 
             
-    def __find_ur_offset(self, ur):
+    def __find_ur_offset(self, _ur):
         '''
             Find ur point offset on img
             
@@ -66,6 +68,7 @@ class CornerFinder:
         '''
         o_y = -1
         o_x = -1
+        ur = np.array(_ur)
 
         for y in range(ur.shape[0]):
             if ur[y, 0] == 0:
@@ -79,7 +82,7 @@ class CornerFinder:
 
         return (o_x, o_y)
 
-    def __find_ll_offset(self, ll):
+    def __find_ll_offset(self, _ll):
         '''
             Find ll point offset on img
             
@@ -90,6 +93,7 @@ class CornerFinder:
         '''
         o_y = -1
         o_x = -1
+        ll = np.array(_ll)
 
         for y in range(ll.shape[0]):
             if ll[ll.shape[0] - y - 1, ll.shape[1] - 1] == 0:
@@ -103,7 +107,7 @@ class CornerFinder:
 
         return (o_x, o_y)
 
-    def __find_lr_offset(self, lr):
+    def __find_lr_offset(self, _lr):
         '''
             Find lr point offset on img
             
@@ -114,6 +118,7 @@ class CornerFinder:
         '''
         o_y = -1
         o_x = -1
+        lr = np.array(_lr)
 
         for y in range(lr.shape[0]):
             if lr[lr.shape[0] - y - 1, 0] == 0:
@@ -155,7 +160,7 @@ class CornerFinder:
             for iw in range(roi_offset_x, roi_offset_x + roi_width - corner_w + 1):
                 yield img[ih:ih + corner_h, iw:iw + corner_w], corner, (iw, ih)
 
-    def __find_corner(self, img, corner, roi):
+    def __find_corner(self, _img, _corner, roi):
         '''
             Find cornerss described with masks on boegen using rois
             
@@ -168,6 +173,8 @@ class CornerFinder:
         '''
         smallest_sum = math.inf
         corner_pos = (-1,-1)
+        img = np.array(_img)
+        corner = np.array(_corner)
 
         with Pool() as pool:
             sums = list(pool.starmap(self.count_sum, self.__img_iter(img, corner, roi)))
@@ -210,10 +217,21 @@ class CornerFinder:
             if not os.path.exists(mask):
                 raise Exception(f"File {mask} doesn't exist")
 
-        ul = cv2.imread(masks[0], cv2.IMREAD_GRAYSCALE)
-        ur = cv2.imread(masks[1], cv2.IMREAD_GRAYSCALE)
-        ll = cv2.imread(masks[2], cv2.IMREAD_GRAYSCALE)
-        lr = cv2.imread(masks[3], cv2.IMREAD_GRAYSCALE)
+        # print("loading rois")
+        ul = Image.open(masks[0])
+        # print(f"img shape {np.array(img).shape}")
+        # print(f"img conv shape {np.array(img.convert('RGB')).shape}")
+        # print(f"img shape {np.array(img).shape}")
+        # ul = ImageOps.grayscale(img)
+        
+        ur = Image.open(masks[1])
+        ll = Image.open(masks[2])
+        lr = Image.open(masks[3])
+        # ul = cv2.imread(masks[0], cv2.IMREAD_GRAYSCALE)
+        # ur = cv2.imread(masks[1], cv2.IMREAD_GRAYSCALE)
+        # ll = cv2.imread(masks[2], cv2.IMREAD_GRAYSCALE)
+        # lr = cv2.imread(masks[3], cv2.IMREAD_GRAYSCALE)
+
 
         ul_o = self.__find_ul_offset(ul)
         ur_o = self.__find_ur_offset(ur)
@@ -224,7 +242,8 @@ class CornerFinder:
 
         i = 0
         for path_evaluation in boegen:
-            evaluation = cv2.imread(path_evaluation, cv2.IMREAD_GRAYSCALE)
+            # evaluation = cv2.imread(path_evaluation, cv2.IMREAD_GRAYSCALE)
+            evaluation = Image.open(path_evaluation)
 
             ul_pos = self.__find_corner(evaluation, ul, rois[0])
             ur_pos = self.__find_corner(evaluation, ur, rois[1])
@@ -255,8 +274,10 @@ class CornerFinder:
                 c_sum: counted sum
                 pos: identifier of sub_img
         '''
+        print("start debug image drawing")
         if os.path.exists(vis_path):
-            raise Exception(f"Debug path invalid. Dir {vis_path} already exists")
+            print("warning debug path already exists")
+            # raise Exception(f"Debug path invalid. Dir {vis_path} already exists")
         else:
             os.mkdir(vis_path)
             
@@ -265,16 +286,20 @@ class CornerFinder:
             f = os.path.join(boegen_path, i[0])
             cs = i[1]
 
-            evaluation = cv2.imread(f)
+            # evaluation = cv2.imread(f)
+            evaluation = Image.open(f)
+            draw = ImageDraw.Draw(evaluation)
+
             if evaluation is None:
                 print(f"ERROR: wrong debug corners path: {f}")
                 return 
 
             for corner in cs:
-                evaluation = cv2.circle(evaluation, corner, radius=15, color=(0, 0, 255), thickness=3)
+                draw.ellipse([(corner[0]-15, corner[1]-15), (corner[0]+15, corner[1]+15)], outline="red", width=3)
+                # evaluation = cv2.circle(evaluation, corner, radius=15, color=(0, 0, 255), thickness=3)
 
-            img_w = evaluation.shape[1]
-            img_h = evaluation.shape[0]
+            img_w = np.array(evaluation).shape[1]
+            img_h = np.array(evaluation).shape[0]
             
             for roi in rois:
                 roi_offset_x = (int)(roi[0] * img_w)
@@ -282,19 +307,20 @@ class CornerFinder:
                 roi_width = (int)(roi[2] * img_w)   
                 roi_height = (int)(roi[3] * img_h)  
 
-                evaluation = cv2.rectangle(evaluation, (roi_offset_x, roi_offset_y), (roi_offset_x + roi_width, roi_offset_y + roi_height), color=(255, 0, 0), thickness=3)
+                draw.rectangle([(roi_offset_x, roi_offset_y), (roi_offset_x + roi_width, roi_offset_y + roi_height)], outline="blue", width=3)
+                # evaluation = cv2.rectangle(evaluation, (roi_offset_x, roi_offset_y), (roi_offset_x + roi_width, roi_offset_y + roi_height), color=(255, 0, 0), thickness=3)
 
-            cv2.imwrite(os.path.join(vis_path, os.path.basename(f)), evaluation)
+            # cv2.imwrite(os.path.join(vis_path, os.path.basename(f)), evaluation)
+            evaluation.save(os.path.join(vis_path, os.path.basename(f)))
     
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("-b", "--boegen_path", default="../../../data/boegen", type=str, help="Path to evaluations folder")
-    parser.add_argument("-m", "--masks_path", default="../../../data/masks", type=str, help="Path to masks folder")
-    parser.add_argument("-v", "--vis_path", type=str, help="Debug corners detection. Path to folder")
-    parser.add_argument("-r", "--roi", type=str, default="../../../data/roi.json", help="Path to file containing roi")
-    parser.add_argument("-o", "--output", type=str, default="../../../data/corners.json", help="Output json with detected corners for each boegen")
-    #parser.add_argument("-o", "--output", type=str, default="../../../data/corners.json", help="Output json with detected corners for each boegen", required=True)
+    parser.add_argument("-b", "--boegen_path", default="data/boegen", type=str, help="Path to evaluations folder")
+    parser.add_argument("-m", "--masks_path", default="data/masks", type=str, help="Path to masks folder")
+    parser.add_argument("-v", "--vis_path", default="data/debug", type=str, help="Debug corners detection. Path to folder")
+    parser.add_argument("-r", "--roi", type=str, default="data/roi.json", help="Path to file containing roi")
+    parser.add_argument("-o", "--output", type=str, default="data/corners.json", help="Output json with detected corners for each boegen")
     opt = parser.parse_args()
 
     f = open(opt.roi)
