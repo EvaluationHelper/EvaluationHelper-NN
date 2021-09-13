@@ -1,7 +1,8 @@
 import json
 import re
 
-root = '../../'
+# root = '../../'
+root = ""
 
 
 class StatisticsBox:

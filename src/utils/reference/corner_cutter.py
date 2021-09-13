@@ -3,7 +3,8 @@ import os.path
 from src.utils.reference.ReferenceSheet import *
 from PIL import Image
 
-root = "../../../"
+# root = "../../../"
+root = ""
 
 
 def __read_sheet_json__(path):
