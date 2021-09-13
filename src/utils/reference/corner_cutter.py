@@ -37,7 +37,7 @@ def __read_sheet_json__(path):
                           *question_lst)
 
 
-def __save_box__(img, box, path_suffix, box_path='data/boxes/', ext='.jpg', puffer=20, size=40):
+def __save_box__(img, box, path_prefix, box_path='data/boxes/', ext='.jpg', puffer=20, size=40):
     """
         crops image based on box coordinates, resizes and saves it
 
@@ -56,7 +56,7 @@ def __save_box__(img, box, path_suffix, box_path='data/boxes/', ext='.jpg', puff
                          box_b_r[0] + puffer, box_b_r[1] + puffer))
     img_res = img_crop.resize((40, 40))
 
-    path = root + box_path + path_suffix + "_" + box.get_name() + ext
+    path = os.path.join(root, box_path, path_prefix + "_" + box.get_name() + ext)
     box.set_path(path)
     img_res.save(path)
 
@@ -70,7 +70,7 @@ def cut_boxes(corners_path, sheet_path='data/boegen/', reference_json_path='data
             sheet_path: path to sheet folder
             reference_json_path: path to reference json
     """
-    reference_sheet = __read_sheet_json__(root + reference_json_path)
+    reference_sheet = __read_sheet_json__(os.path.join(root, reference_json_path))
     file = open(corners_path)
     corners = json.load(file)
     file.close()
@@ -83,7 +83,7 @@ def cut_boxes(corners_path, sheet_path='data/boegen/', reference_json_path='data
     for sheet in sheet_lst:
         # rotate and translate back to coordinates of ref_sheet1
         rot_m, tl, rot_a = sheet.calculateRotationTranslation(sheet_lst[0])
-        image = Image.open(root + sheet_path + sheet.get_name())
+        image = Image.open(os.path.join(root + sheet_path + sheet.get_name()))
         image_rot_tl = image.transform(image.size, Image.AFFINE,
                                        (rot_m[0][0], rot_m[0][1], tl[0],
                                         rot_m[1][0], rot_m[1][1], tl[1]))

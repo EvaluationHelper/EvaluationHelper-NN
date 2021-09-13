@@ -1,5 +1,6 @@
 import json
 import re
+import os.path
 
 root = '../../'
 
@@ -78,7 +79,7 @@ class StatisticsBox:
         return lst_unanswered
 
 
-def extractPath(path, path_boxes="data/boxes/", path_sheet="Bogen", path_question="_question", path_box="_box",ext=".jpg"):
+def extractPath(path, path_boxes="data/boxes/", path_sheet="Bogen", path_question="_question", path_box="_box", ext=".jpg"):
     """
         searches for int (.*) in a string
         *root*/*path_boxes*/Bogen(.*)_question(.*)_box(.*).*ext*
@@ -95,9 +96,9 @@ def extractPath(path, path_boxes="data/boxes/", path_sheet="Bogen", path_questio
             question: question number
             box: box number
     """
-    if not path.startswith(root + path_boxes):
+    if not path.startswith(os.path.join(root, path_boxes)):
         raise Exception(f"error in json, wrong path: {path}")
-    p = path.strip(root + path_boxes).strip(ext)
+    p = path.strip(os.path.join(root, path_boxes)).strip(ext)
     sheet = int(re.search(path_sheet + '(.*)' + path_question, p).group(1))
     question = int(re.search(path_question + '(.*)' + path_box, p).group(1))
     box = int(re.search(path_box + '(.*)', p).group(1))
@@ -121,7 +122,7 @@ def create_print_statistics(path='data/box_evaluated.json'):
         Args:
             path: path of evaluation result for boxes by NN
     """
-    with open(root + path) as box_json:
+    with open(os.path.join(root, path)) as box_json:
         data = json.loads(box_json.read())
 
     lst = []
