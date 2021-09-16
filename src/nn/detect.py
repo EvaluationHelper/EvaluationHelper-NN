@@ -1,5 +1,5 @@
 from nn.model import Model
-import cv2
+from PIL.Image import Image
 import os
 import numpy as np
 import json
@@ -16,7 +16,7 @@ def create_annotation(boxes_path='../../data/boxes/'):
 
     for f in os.listdir(boxes_path):
         path = os.path.join(boxes_path,f)
-        image = cv2.imread(path,cv2.IMREAD_GRAYSCALE)
+        image = Image.open(path)
 
         if image is None:
                 raise Exception(f"wrong file path for boxes-ticked detection : {path}")
