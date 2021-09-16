@@ -1,9 +1,6 @@
 import json
 import re
 
-root = '../../'
-
-
 class StatisticsBox:
     def __init__(self, sheet, question, box, checked):
         self._sheet = sheet
@@ -95,9 +92,9 @@ def extractPath(path, path_boxes="data/boxes/", path_sheet="Bogen", path_questio
             question: question number
             box: box number
     """
-    if not path.startswith(root + path_boxes):
+    if not path.startswith(path_boxes):
         raise Exception(f"error in json, wrong path: {path}")
-    p = path.strip(root + path_boxes).strip(ext)
+    p = path.strip(path_boxes).strip(ext)
     sheet = int(re.search(path_sheet + '(.*)' + path_question, p).group(1))
     question = int(re.search(path_question + '(.*)' + path_box, p).group(1))
     box = int(re.search(path_box + '(.*)', p).group(1))
@@ -121,7 +118,7 @@ def create_print_statistics(root = '../../', path='data/box_evaluated.json'):
         Args:
             path: path of evaluation result for boxes by NN
     """
-    with open(root + path) as box_json:
+    with open(path) as box_json:
         data = json.loads(box_json.read())
 
     lst = []

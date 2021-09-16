@@ -1,4 +1,4 @@
-from create_reference import create_reference
+from utils.create_reference import create_reference
 from utils.reference.corner_cutter import cut_boxes
 from nn.model import Model
 from nn.detect import create_annotation, save_annotaion
@@ -21,9 +21,10 @@ if __name__ == '__main__':
 
     #construct absolute paths to be used as args
     paths = get_absolute_paths()
+    reference_shhet_name = "Bogen1.jpg"
 
     #detect corners and determine transformation to reference sheet
-    create_reference(False, paths[0], usr_boegen_path, paths[1], paths[2], paths[3])
+    create_reference(True, usr_boegen_path, paths[1], paths[0], paths[3], paths[2], reference_shhet_name)
 
     #cut out every box
     cut_boxes(paths[3], sheet_path=usr_boegen_path)

@@ -1,6 +1,6 @@
 import os
 import random
-import cv2
+from PIL.Image import Image
 import numpy as np
 
 class DataLoader():
@@ -20,7 +20,7 @@ class DataLoader():
             raise StopIteration
         batch = [[], []]
         for path, label in self.dataset[self.i * self.bath_size : self.i * self.bath_size + self.bath_size]:
-            img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+            img = Image.open(path)
             if img is None:
                 raise Exception(f"wrong file path in batch generation(data loader): {path}")
             
