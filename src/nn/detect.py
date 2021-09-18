@@ -11,6 +11,7 @@ def create_annotation(model, boxes_path='../../data/boxes/'):
         Keys: path and name to cut-out box (string)
         Values: 1 if checked, 0 if unchecked
     '''''
+    print("Create Annotation ...")
     images = dict()
     annotation  = []
 
@@ -33,6 +34,7 @@ def create_annotation(model, boxes_path='../../data/boxes/'):
         box_dict[path] = ticked_state
         annotation.append(box_dict)
 
+    print("Create Annotation ... OK")
     return annotation
 
 
@@ -40,10 +42,12 @@ def save_annotation(annotation, annotation_dir='../../data'):
     '''''
     Saves dictionary a a json file
     '''''
+    print("Save Annotation ...")
     annotations_path = os.path.join(annotation_dir, "annotation.json")
     f = open(annotations_path,"w")
     f.write(json.dumps(annotation))
     f.close
+    print("Save Annotation ... OK")
 
 
 

@@ -4,7 +4,9 @@ from utils.reference.corner_finder import CornerFinder
 from utils.reference.ReferenceSheet import ReferenceSheet
 import json
 
+
 def create_reference(_update_corners, _sheets, _masks, _roi, _corners, _transformations, _reference_sheet):
+    print("Create Reference ...")
     if _update_corners:
         print("Update corners detection")
         f = open(_roi)
@@ -50,7 +52,7 @@ def create_reference(_update_corners, _sheets, _masks, _roi, _corners, _transfor
             f.close()
             print(f"Transformations saved to {_transformations}")
         except Exception as e:
-            print(f"expetion thrown: {e}")
+            print(f"exception thrown: {e}")
 
     else:
         print("Count transformation only, use old corners detection")
@@ -66,12 +68,13 @@ def create_reference(_update_corners, _sheets, _masks, _roi, _corners, _transfor
             name = sheet[0]
             s = ReferenceSheet(name, cs[0], cs[1], cs[2], cs[3], [])
             rot_matrix, translation, rot_angle_deg = reference_sheet.calculateRotationTranslation(s)
-            sheets[name] = {"rot_matrix" : rot_matrix.tolist(), "translation" : translation.tolist()}
+            sheets[name] = {"rot_matrix": rot_matrix.tolist(), "translation" : translation.tolist()}
 
         f = open(_transformations, "w")
         f.write(json.dumps(sheets))
         f.close()
         print(f"Transformations saved to {_transformations}")
+    print("Create Reference ... OK")
 
 
 if __name__ == '__main__':

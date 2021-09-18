@@ -3,12 +3,14 @@ import numpy as np
 import os
 
 
-class Model():
+class Model:
     def __init__(self, path=""):
+        print("Load Model ...")
         if not path:
             self.init_layers()
         else:
             self.load_model(path)
+        print("Load Model ... OK")
 
     def init_layers(self):
         '''
@@ -70,7 +72,6 @@ class Model():
         dlossdb = dlossdnet.T 
         return dlossdw, dlossdb
 
-
     def step(self, learning_rate, dw, db):
         '''
         Update model using gradient
@@ -88,4 +89,3 @@ class Model():
         model_description["b"] = (self.b.copy()).tolist()
         f.write(json.dumps(model_description))
         f.close()
-        
