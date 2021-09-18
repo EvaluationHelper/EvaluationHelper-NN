@@ -1,5 +1,5 @@
 from nn.model import Model
-from PIL.Image import Image
+from PIL import Image
 import os
 import numpy as np
 import json
@@ -16,7 +16,7 @@ def create_annotation(model, boxes_path='../../data/boxes/'):
 
     for f in os.listdir(boxes_path):
         path = os.path.join(boxes_path,f)
-        image = Image.open(path)
+        image = np.array(Image.open(path))
 
         if image is None:
                 raise Exception(f"wrong file path for boxes-ticked detection : {path}")
@@ -33,7 +33,7 @@ def create_annotation(model, boxes_path='../../data/boxes/'):
         box_dict[path] = ticked_state
         annotation.append(box_dict)
 
-    return [annotation] 
+    return annotation
 
 
 def save_annotation(annotation, annotation_dir='../../data'):

@@ -1,5 +1,6 @@
 import json
 import re
+import os
 
 class StatisticsBox:
     def __init__(self, sheet, question, box, checked):
@@ -92,7 +93,7 @@ def extractPath(path, path_boxes="data/boxes/", path_sheet="Bogen", path_questio
             question: question number
             box: box number
     """
-    if not path.startswith(path_boxes):
+    if not path.startswith(os.path.join(os.getcwd(), path_boxes)):
         raise Exception(f"error in json, wrong path: {path}")
     p = path.strip(path_boxes).strip(ext)
     sheet = int(re.search(path_sheet + '(.*)' + path_question, p).group(1))
@@ -105,7 +106,7 @@ def removeDuplicates(lst):
     return [t for t in (set(tuple(i) for i in lst))]
 
 
-def create_print_statistics(root = '../../', path='data/box_evaluated.json'):
+def create_print_statistics(root = '../../', path='data/annotation.json'):
     """
         prints statistics in the form
             Sheet number
@@ -118,7 +119,7 @@ def create_print_statistics(root = '../../', path='data/box_evaluated.json'):
         Args:
             path: path of evaluation result for boxes by NN
     """
-    with open(path) as box_json:
+    with open(os.path.join(root,path)) as box_json:
         data = json.loads(box_json.read())
 
     lst = []
