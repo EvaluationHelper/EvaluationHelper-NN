@@ -36,7 +36,7 @@ def create_annotation(model, boxes_path='../../data/boxes/'):
     return [annotation] 
 
 
-def save_annotaion(annotation, annotation_dir='../../data'):
+def save_annotation(annotation, annotation_dir='../../data'):
     '''''
     Saves dictionary a a json file
     '''''
@@ -55,4 +55,4 @@ if __name__ == '__main__':
     '''''
     model = Model('../../data/')
     annotation = create_annotation(model)
-    save_annotaion(annotation)
+    save_annotation(annotation)

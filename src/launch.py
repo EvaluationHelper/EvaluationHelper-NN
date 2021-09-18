@@ -21,10 +21,10 @@ if __name__ == '__main__':
 
     #construct absolute paths to be used as args
     paths = get_absolute_paths()
-    reference_shhet_name = "Bogen1.jpg"
+    reference_sheet_name = "Bogen1.jpg"
 
     #detect corners and determine transformation to reference sheet
-    create_reference(True, usr_boegen_path, paths[1], paths[0], paths[3], paths[2], reference_shhet_name)
+    create_reference(True, usr_boegen_path, paths[1], paths[0], paths[3], paths[2], reference_sheet_name)
 
     #cut out every box
     cut_boxes(paths[3], sheet_path=usr_boegen_path)
@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     # make predictions w/ model and save as json
     annotation = create_annotation(model)
-    save_annotaion(annotation)
+    save_annotation(annotation)
 
     # print out statistics about evaluation
     create_print_statistics(cwd)
