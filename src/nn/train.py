@@ -1,10 +1,10 @@
 import numpy as np
 import time
 import argparse
-from model import Model
+from .model import Model
 import os
-from dataset import create_bin_dataloader
-from test import test
+from .dataset import create_bin_dataloader
+from .test import test
 import json
 
 def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_path, test_positive, test_negative):

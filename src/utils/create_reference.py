@@ -1,7 +1,7 @@
 import argparse
 import time
-from utils.reference.corner_finder import CornerFinder
-from utils.reference.ReferenceSheet import ReferenceSheet
+from .reference.corner_finder import CornerFinder
+from .reference.ReferenceSheet import ReferenceSheet
 import json
 
 

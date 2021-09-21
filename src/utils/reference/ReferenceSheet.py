@@ -1,4 +1,4 @@
-from utils.reference.RotationTranslation import calculateRotationTranslation, calculateRotatedTranslatedFromPoint
+from .RotationTranslation import calculateRotationTranslation, calculateRotatedTranslatedFromPoint
 
 
 class ReferenceSheet:

@@ -1,5 +1,5 @@
-from dataset import create_bin_dataloader
-from model import Model
+from .dataset import create_bin_dataloader
+from .model import Model
 import json
 
 
