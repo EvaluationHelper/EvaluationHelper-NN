@@ -14,7 +14,8 @@ def get_absolute_paths(relative_paths=["data/roi.json",
                                        "data/transformations.json",
                                        "data/corners.json",
                                        "data/boxes",
-                                       "data"]):
+                                       "data",
+                                       "data/Bogen1ReferencePoints.json"]):
     abs_paths = []
     for path in relative_paths:
         abs_paths.append(os.path.normpath(os.path.join(root_path, path)))
@@ -36,8 +37,8 @@ if __name__ == '__main__':
     # cut out every box
     cut_boxes(paths[3],
               sheet_path=usr_boegen_path,
-              box_path=os.path.normpath(os.path.join(root_path, "data/boxes/")),
-              reference_json_path=os.path.normpath(os.path.join(root_path, "data/Bogen1ReferencePoints.json")))
+              box_path=os.path.normpath(paths[4]),
+              reference_json_path=os.path.normpath(paths[6]))
 
     # load nn model
     model = Model(paths[5])
@@ -48,3 +49,4 @@ if __name__ == '__main__':
 
     # print out statistics about evaluation
     create_print_statistics(root_path, "data/annotation.json")
+

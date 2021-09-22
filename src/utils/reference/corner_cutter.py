@@ -80,12 +80,8 @@ def cut_boxes(corners_path, sheet_path, box_path, reference_json_path):
                  for key in corners.keys()]
 
     for sheet in sheet_lst:
-        if sheet.get_name()=='Bogen1.jpg':
-            sheet_ref = sheet
-
-    for sheet in sheet_lst:
         # rotate and translate back to coordinates of ref_sheet1
-        rot_m, tl, rot_a = sheet.calculateRotationTranslation(sheet_ref)
+        rot_m, tl, rot_a = sheet.calculateRotationTranslation(reference_sheet)
         image = Image.open(os.path.join(sheet_path, sheet.get_name()))
         image_rot_tl = image.transform(image.size, Image.AFFINE,
                                        (rot_m[0][0], rot_m[0][1], tl[0],
