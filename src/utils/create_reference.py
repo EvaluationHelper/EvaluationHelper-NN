@@ -1,10 +1,12 @@
 import argparse
 import time
-from reference.corner_finder import CornerFinder
-from reference.ReferenceSheet import ReferenceSheet
+from .reference.corner_finder import CornerFinder
+from .reference.ReferenceSheet import ReferenceSheet
 import json
 
-def create_reference(_update_corners, _boegen, _masks, _roi, _corners, _transformations, _annotated_boegen):
+
+def create_reference(_update_corners, _sheets, _masks, _roi, _corners, _transformations, _reference_sheet):
+    print("Create Reference ...")
     if _update_corners:
         print("Update corners detection")
         f = open(_roi)
@@ -24,7 +26,7 @@ def create_reference(_update_corners, _boegen, _masks, _roi, _corners, _transfor
             print("Starting corners detection...")
             start_time = time.perf_counter()
             c_finder = CornerFinder()
-            corners = c_finder.find_corners(_boegen, _masks, rois)
+            corners = c_finder.find_corners(_sheets, _masks, rois)
 
             json_corners = json.dumps(corners)
             f = open(_corners, "w")
@@ -32,25 +34,25 @@ def create_reference(_update_corners, _boegen, _masks, _roi, _corners, _transfor
             f.close()
 
             finish_time = time.perf_counter()
-            print(f"Corners detection is finished in {finish_time - start_time} sec for {len(corners)} Boegen")
+            print(f"Corners detection is finished in {finish_time - start_time} sec for {len(corners)} Sheets")
 
-            boegens = dict()
-            reference_corners = corners[_annotated_boegen]
-            reference_sheet = ReferenceSheet(_annotated_boegen, reference_corners[0], reference_corners[1], reference_corners[2], reference_corners[3], [])
+            sheets = dict()
+            reference_corners = corners[_reference_sheet]
+            reference_sheet = ReferenceSheet(_reference_sheet, reference_corners[0], reference_corners[1], reference_corners[2], reference_corners[3], [])
             
-            for boegen in corners.items():
-                cs = boegen[1]
-                name = boegen[0]
+            for sheet in corners.items():
+                cs = sheet[1]
+                name = sheet[0]
                 s = ReferenceSheet(name, cs[0], cs[1], cs[2], cs[3], [])
                 rot_matrix, translation, rot_angle_deg = reference_sheet.calculateRotationTranslation(s)
-                boegens[name] = {"rot_matrix" : rot_matrix.tolist(), "translation" : translation.tolist()}
+                sheets[name] = {"rot_matrix" : rot_matrix.tolist(), "translation" : translation.tolist()}
 
             f = open(_transformations, "w")
-            f.write(json.dumps(boegens))
+            f.write(json.dumps(sheets))
             f.close()
             print(f"Transformations saved to {_transformations}")
         except Exception as e:
-            print(f"expetion thrown: {e}")
+            print(f"exception thrown: {e}")
 
     else:
         print("Count transformation only, use old corners detection")
@@ -58,20 +60,21 @@ def create_reference(_update_corners, _boegen, _masks, _roi, _corners, _transfor
         corners = json.load(f)
         f.close()
 
-        boegens = dict()
-        reference_corners = corners[_annotated_boegen]
-        reference_sheet = ReferenceSheet(_annotated_boegen, reference_corners[0], reference_corners[1], reference_corners[2], reference_corners[3], [])
-        for boegen in corners.items():
-            cs = boegen[1]
-            name = boegen[0]
+        sheets = dict()
+        reference_corners = corners[_reference_sheet]
+        reference_sheet = ReferenceSheet(_reference_sheet, reference_corners[0], reference_corners[1], reference_corners[2], reference_corners[3], [])
+        for sheet in corners.items():
+            cs = sheet[1]
+            name = sheet[0]
             s = ReferenceSheet(name, cs[0], cs[1], cs[2], cs[3], [])
             rot_matrix, translation, rot_angle_deg = reference_sheet.calculateRotationTranslation(s)
-            boegens[name] = {"rot_matrix" : rot_matrix.tolist(), "translation" : translation.tolist()}
+            sheets[name] = {"rot_matrix": rot_matrix.tolist(), "translation" : translation.tolist()}
 
         f = open(_transformations, "w")
-        f.write(json.dumps(boegens))
+        f.write(json.dumps(sheets))
         f.close()
         print(f"Transformations saved to {_transformations}")
+    print("Create Reference ... OK")
 
 
 if __name__ == '__main__':

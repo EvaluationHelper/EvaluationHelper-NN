@@ -1,6 +1,6 @@
 import json
 import os.path
-from src.utils.reference.ReferenceSheet import *
+from .ReferenceSheet import *
 from PIL import Image
 
 
@@ -35,39 +35,40 @@ def __read_sheet_json__(path):
                           *question_lst)
 
 
-def __save_box__(img, box, path_suffix, box_path='data/boxes/', ext='.jpg', puffer=20, size=40):
+def __save_box__(img, box, path_prefix, box_path, ext='.jpg', puffer=20, size=40):
     """
         crops image based on box coordinates, resizes and saves it
 
         Args:
             img: large image
             box: object of class src.utils.reference.ReferenceSheet.Box
-            path_suffix: suffix for savename
+            path_prefix: prefix for savename
             box_path: path to boxes
             ext: extension type
             puffer: crop image with puffer around corners
             size: resize size
     """
-    puffer = 20
     box_u_l, box_b_r = box.get_points()
     img_crop = img.crop((box_u_l[0] - puffer, box_u_l[1] - puffer,
                          box_b_r[0] + puffer, box_b_r[1] + puffer))
-    img_res = img_crop.resize((40, 40))
+    img_res = img_crop.resize((size, size))
 
-    path = box_path + path_suffix + "_" + box.get_name() + ext
+    path = os.path.join(box_path, path_prefix + "_" + box.get_name() + ext)
     box.set_path(path)
     img_res.save(path)
 
 
-def cut_boxes(corners_path, sheet_path='data/boegen/', reference_json_path='data/Bogen1ReferencePoints.json'):
+def cut_boxes(corners_path, sheet_path, box_path, reference_json_path):
     """
         rotates, translates, cuts and saves boxes based on corner data and reference sheet data
 
         Args:
             corners_path: path to json containing all sheets with their corners
             sheet_path: path to sheet folder
+            box_path: path to box folder
             reference_json_path: path to reference json
     """
+    print("Cut Boxes ...")
     reference_sheet = __read_sheet_json__(reference_json_path)
     file = open(corners_path)
     corners = json.load(file)
@@ -79,9 +80,13 @@ def cut_boxes(corners_path, sheet_path='data/boegen/', reference_json_path='data
                  for key in corners.keys()]
 
     for sheet in sheet_lst:
+        if sheet.get_name()=='Bogen1.jpg':
+            sheet_ref = sheet
+
+    for sheet in sheet_lst:
         # rotate and translate back to coordinates of ref_sheet1
-        rot_m, tl, rot_a = sheet.calculateRotationTranslation(sheet_lst[0])
-        image = Image.open(sheet_path + sheet.get_name())
+        rot_m, tl, rot_a = sheet.calculateRotationTranslation(sheet_ref)
+        image = Image.open(os.path.join(sheet_path, sheet.get_name()))
         image_rot_tl = image.transform(image.size, Image.AFFINE,
                                        (rot_m[0][0], rot_m[0][1], tl[0],
                                         rot_m[1][0], rot_m[1][1], tl[1]))
@@ -89,5 +94,5 @@ def cut_boxes(corners_path, sheet_path='data/boegen/', reference_json_path='data
         for question in reference_sheet.get_questions():
             for box in question.get_boxes():
                 __save_box__(image_rot_tl, box,
-                             os.path.splitext(sheet.get_name())[0] + "_" + question.get_name())
-
+                             os.path.splitext(sheet.get_name())[0] + "_" + question.get_name(), box_path)
+    print("Cut Boxes ... OK")

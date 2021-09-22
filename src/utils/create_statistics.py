@@ -1,5 +1,7 @@
 import json
 import re
+import os
+
 
 class StatisticsBox:
     def __init__(self, sheet, question, box, checked):
@@ -57,11 +59,12 @@ class StatisticsBox:
         pp, p, neut, n, nn = self.get_box_statistics()
         size = len(pp + p + neut + n + nn)
         av = (2 * len(pp) + len(p) + 0 * len(neut) - len(n) - 2 * len(nn)) / size
-        var = (len(pp) * pow(av - 2, 2)
-              + len(p)  * pow(av - 1, 2)
-              + len(neut) * pow(av - 0, 2)
-              + len(n) * pow(av + 1, 2)
-              + len(nn) * pow(av + 2, 2)) / size
+        # var = (len(pp) * pow(av - 2, 2)
+        #       + len(p)  * pow(av - 1, 2)
+        #       + len(neut) * pow(av - 0, 2)
+        #       + len(n) * pow(av + 1, 2)
+        #       + len(nn) * pow(av + 2, 2)) / size
+        var = 1
         return av, var, size
 
     def get_sheet(self):
@@ -75,14 +78,15 @@ class StatisticsBox:
         return lst_unanswered
 
 
-def extractPath(path, path_boxes="data/boxes/", path_sheet="Bogen", path_question="_question", path_box="_box",ext=".jpg"):
+def extractPath(path, path_boxes, path_sheet="Bogen", path_question="_question",
+                path_box="_box", ext=".jpg"):
     """
         searches for int (.*) in a string
         *root*/*path_boxes*/Bogen(.*)_question(.*)_box(.*).*ext*
 
         Args:
-            path: full path of box
-            path_boxes: path of all boxes
+            path: full path to box
+            path_boxes: path to all boxes
             path_sheet: regex path for sheet
             path_question: regex path for question
             path_box: regex path for box
@@ -92,8 +96,6 @@ def extractPath(path, path_boxes="data/boxes/", path_sheet="Bogen", path_questio
             question: question number
             box: box number
     """
-    if not path.startswith(path_boxes):
-        raise Exception(f"error in json, wrong path: {path}")
     p = path.strip(path_boxes).strip(ext)
     sheet = int(re.search(path_sheet + '(.*)' + path_question, p).group(1))
     question = int(re.search(path_question + '(.*)' + path_box, p).group(1))
@@ -102,10 +104,10 @@ def extractPath(path, path_boxes="data/boxes/", path_sheet="Bogen", path_questio
 
 
 def removeDuplicates(lst):
-    return [t for t in (set(tuple(i) for i in lst))]
+    return sorted([t for t in (set(tuple(i) for i in lst))])
 
 
-def create_print_statistics(path='data/box_evaluated.json'):
+def create_print_statistics(root, path):
     """
         prints statistics in the form
             Sheet number
@@ -116,15 +118,17 @@ def create_print_statistics(path='data/box_evaluated.json'):
             Variance
 
         Args:
+            root: path to root
             path: path of evaluation result for boxes by NN
     """
-    with open(path) as box_json:
+    print("Create Statistics ...")
+    with open(os.path.normpath(os.path.join(root, path))) as box_json:
         data = json.loads(box_json.read())
 
     lst = []
     for raw_box in data:
         for key in raw_box.keys():
-            box = extractPath(key) + (raw_box.get(key),)
+            box = extractPath(key, path_boxes=os.path.normpath(os.path.join(root, "data/boxes/"))) + (raw_box.get(key),)
             lst.append(box)
 
     sheet_lst = []
@@ -150,3 +154,4 @@ def create_print_statistics(path='data/box_evaluated.json'):
         print('Average:', av)
         print('Variance:', var)
         print('-----------------------')
+    print("Create Statistics ... OK")

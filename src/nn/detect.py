@@ -1,22 +1,23 @@
 from nn.model import Model
-from PIL.Image import Image
+from PIL import Image
 import os
 import numpy as np
 import json
 
-def create_annotation(boxes_path='../../data/boxes/'):
+def create_annotation(model, boxes_path='../../data/boxes/'):
     '''''
     predicts if boxes are checked with NN model
     creates a dictionary with information about all boxes:
         Keys: path and name to cut-out box (string)
         Values: 1 if checked, 0 if unchecked
     '''''
+    print("Create Annotation ...")
     images = dict()
     annotation  = []
 
     for f in os.listdir(boxes_path):
         path = os.path.join(boxes_path,f)
-        image = Image.open(path)
+        image = np.array(Image.open(path))
 
         if image is None:
                 raise Exception(f"wrong file path for boxes-ticked detection : {path}")
@@ -33,17 +34,20 @@ def create_annotation(boxes_path='../../data/boxes/'):
         box_dict[path] = ticked_state
         annotation.append(box_dict)
 
-    return [annotation] 
+    print("Create Annotation ... OK")
+    return annotation
 
 
-def save_annotaion(annotation, annotation_dir='../../data'):
+def save_annotation(annotation, annotation_dir='../../data'):
     '''''
     Saves dictionary a a json file
     '''''
+    print("Save Annotation ...")
     annotations_path = os.path.join(annotation_dir, "annotation.json")
     f = open(annotations_path,"w")
     f.write(json.dumps(annotation))
     f.close
+    print("Save Annotation ... OK")
 
 
 
@@ -54,5 +58,5 @@ if __name__ == '__main__':
     annotations.json contains path with name of each box and corresponding boolean (ticked = 1, unticked = 0)
     '''''
     model = Model('../../data/')
-    annotation = create_annotation()
-    save_annotaion(annotation)
+    annotation = create_annotation(model)
+    save_annotation(annotation)
