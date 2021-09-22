@@ -31,7 +31,7 @@ if __name__ == '__main__':
     reference_sheet_name = "Bogen1.jpg"
 
     # detect corners and determine transformation to reference sheet
-    # create_reference(False, usr_boegen_path, paths[1], paths[0], paths[3], paths[2], reference_sheet_name)
+    create_reference(True, usr_boegen_path, paths[1], paths[0], paths[3], paths[2], reference_sheet_name)
 
     # cut out every box
     cut_boxes(paths[3],
