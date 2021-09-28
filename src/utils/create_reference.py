@@ -80,7 +80,7 @@ def create_reference(_update_corners, _sheets, _masks, _roi, _corners, _transfor
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--update_corners", action='store_true', help="If used will detect corners, else will use already detected from default output")
-    parser.add_argument("-b", "--boegen", default="data/boegen", type=str, help="Path to evaluations folder")
+    parser.add_argument("-b", "--boegen", type=str, help="Path to evaluations folder")
     parser.add_argument("-m", "--masks", default="data/masks", type=str, help="Path to masks folder")
     parser.add_argument("-r", "--roi", type=str, default="data/roi.json", help="Path to file containing roi")
     parser.add_argument("-oc", "--corners", type=str, default="data/corners.json", help="Output json with detected corners for each boegen")
