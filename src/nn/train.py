@@ -3,9 +3,9 @@ import argparse
 import os
 import json
 
-from nn.model import Model
-from nn.dataset import create_bin_dataloader
-from nn.test import test
+from model import Model
+from dataset import create_bin_dataloader
+from test import test
 
 
 def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_path, test_positive, test_negative):

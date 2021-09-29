@@ -1,7 +1,7 @@
 import json
 
-from nn.dataset import create_bin_dataloader
-from nn.model import Model
+from dataset import create_bin_dataloader
+from model import Model
 
 
 def test(model : Model, positive_path, negative_path, metrics_path):

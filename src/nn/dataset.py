@@ -1,6 +1,6 @@
 import os
 import random
-from PIL.Image import Image
+from PIL import Image
 import numpy as np
 
 class DataLoader():
@@ -20,11 +20,11 @@ class DataLoader():
             raise StopIteration
         batch = [[], []]
         for path, label in self.dataset[self.i * self.bath_size : self.i * self.bath_size + self.bath_size]:
-            img = Image.open(path)
+            img = np.array(Image.open(path))
             if img is None:
                 raise Exception(f"wrong file path in batch generation(data loader): {path}")
             
-            vec_img = np.reshape(img, (img.shape[0] * img.shape[1]))
+            vec_img = np.resize(img, (img.shape[0] * img.shape[1]))
             vec_img = vec_img.astype('float64')
             vec_img /= 255.
 
