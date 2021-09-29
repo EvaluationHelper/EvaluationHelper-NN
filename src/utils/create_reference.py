@@ -1,8 +1,9 @@
 import argparse
 import time
-from .reference.corner_finder import CornerFinder
-from .reference.ReferenceSheet import ReferenceSheet
 import json
+
+from utils.reference.corner_finder import CornerFinder
+from utils.reference.ReferenceSheet import ReferenceSheet
 
 
 def create_reference(_update_corners, _sheets, _masks, _roi, _corners, _transformations, _reference_sheet):

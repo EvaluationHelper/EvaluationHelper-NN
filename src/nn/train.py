@@ -1,14 +1,15 @@
-import numpy as np
 import time
 import argparse
-from .model import Model
 import os
-from .dataset import create_bin_dataloader
-from .test import test
 import json
 
+from nn.model import Model
+from nn.dataset import create_bin_dataloader
+from nn.test import test
+
+
 def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_path, test_positive, test_negative):
-    '''
+    """
     Train & test & save the NN
     Args: 
         positive_path : path to train crossed boxes 
@@ -21,10 +22,10 @@ def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_
         test_negative : path to test not-crossed boxes
     Returns: 
         ...      
-    '''
+    """
     # run dir
     run_name = time.perf_counter_ns()
-    run_dir = os.path.join(runs_path, "run_" + str(run_name))
+    run_dir = os.path.normpath(os.path.join(runs_path, "run_" + str(run_name)))
     os.mkdir(run_dir)
 
     train_info = dict()
@@ -76,6 +77,7 @@ def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_
     # test 
     test(model, test_positive, test_negative, os.path.join(run_dir, "metrics.json"))
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-e", "--epochs", type=int, default=30, help="number of training epochs")
@@ -90,4 +92,3 @@ if __name__ == '__main__':
     opt = parser.parse_args()
 
     train(opt.positive_path, opt.negative_path, opt.batch_size, opt.epochs, opt.learning_rate, opt.runs, opt.test_positive, opt.test_negative)
-    

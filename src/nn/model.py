@@ -13,9 +13,9 @@ class Model:
         print("Load Model ... OK")
 
     def init_layers(self):
-        '''
+        """
         Initialize the NN layers (weights, biases)
-        '''
+        """
         self.W = np.random.standard_normal((2, 1600)) / 40
         self.b = np.random.standard_normal((2, 1))
         
@@ -32,26 +32,26 @@ class Model:
         return sig    
 
     def forward(self, input):
-        '''
+        """
         Make predicion on input using model
         Args:
             input : img of box
         Returns: 
             pred : prediction of the model
-        '''
+        """
         net_sum = np.dot(self.W, input.T)
         biased = net_sum + self.b
         pred = self.sigmoid(biased)
         return pred.T    
 
     def compute_loss(self, pred, targets):
-        '''
+        """
         Compute loss of prediction
-        '''
+        """
         return np.sum(-np.sum(targets * np.log(pred)) - (1 - targets) * np.log(1 - pred))
 
     def find_gradient(self, input, pred, target): 
-        '''
+        """
         Compute gradient of the model based on input, pred and target values
         Args:
             input : box img
@@ -60,7 +60,7 @@ class Model:
         Returns: 
             dloodw : impact of weights on loss 
             dlossdb : impact of biases on loss
-        '''
+        """
         dnetdw = input
 
         doutdnet = pred * (1 - pred)
@@ -73,16 +73,16 @@ class Model:
         return dlossdw, dlossdb
 
     def step(self, learning_rate, dw, db):
-        '''
+        """
         Update model using gradient
-        '''
+        """
         self.W = self.W - learning_rate * dw
         self.b = self.b - learning_rate * db 
 
     def save_model(self, save_path):
-        '''
+        """
         Save current model
-        '''
+        """
         f = open(save_path, "w")
         model_description = dict()
         model_description["W"] = (self.W.copy()).tolist()

@@ -1,9 +1,10 @@
+import os
+
 from utils.create_reference import create_reference
 from utils.reference.corner_cutter import cut_boxes
 from nn.model import Model
 from nn.detect import create_annotation, save_annotation
 from utils.create_statistics import create_print_statistics
-import os
 
 cwd = os.getcwd()
 root_path, tail = os.path.split(cwd)
@@ -32,7 +33,7 @@ if __name__ == '__main__':
     reference_sheet_name = "Bogen1.jpg"
 
     # detect corners and determine transformation to reference sheet
-    create_reference(True, usr_boegen_path, paths[1], paths[0], paths[3], paths[2], reference_sheet_name)
+    create_reference(False, usr_boegen_path, paths[1], paths[0], paths[3], paths[2], reference_sheet_name)
 
     # cut out every box
     cut_boxes(paths[3],

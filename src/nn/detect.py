@@ -1,16 +1,18 @@
-from nn.model import Model
 from PIL import Image
 import os
 import numpy as np
 import json
 
+from nn.model import Model
+
+
 def create_annotation(model, boxes_path='../../data/boxes/'):
-    '''''
+    """
     predicts if boxes are checked with NN model
     creates a dictionary with information about all boxes:
         Keys: path and name to cut-out box (string)
         Values: 1 if checked, 0 if unchecked
-    '''''
+    """
     print("Create Annotation ...")
     images = dict()
     annotation  = []
@@ -39,16 +41,15 @@ def create_annotation(model, boxes_path='../../data/boxes/'):
 
 
 def save_annotation(annotation, annotation_dir='../../data'):
-    '''''
+    """
     Saves dictionary a a json file
-    '''''
+    """
     print("Save Annotation ...")
     annotations_path = os.path.join(annotation_dir, "annotation.json")
     f = open(annotations_path,"w")
     f.write(json.dumps(annotation))
     f.close
     print("Save Annotation ... OK")
-
 
 
 if __name__ == '__main__':

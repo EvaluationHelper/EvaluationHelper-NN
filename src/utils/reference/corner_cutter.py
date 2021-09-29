@@ -1,6 +1,8 @@
 import json
 import os.path
-from .ReferenceSheet import *
+import shutil
+
+from utils.reference.ReferenceSheet import *
 from PIL import Image
 
 
@@ -69,6 +71,13 @@ def cut_boxes(corners_path, sheet_path, box_path, reference_json_path):
             reference_json_path: path to reference json
     """
     print("Cut Boxes ...")
+
+    if not os.path.isdir(box_path):
+        os.mkdir(box_path)
+    else:
+        shutil.rmtree(box_path)
+        os.mkdir(box_path)
+
     reference_sheet = __read_sheet_json__(reference_json_path)
     file = open(corners_path)
     corners = json.load(file)
@@ -86,9 +95,6 @@ def cut_boxes(corners_path, sheet_path, box_path, reference_json_path):
         image_rot_tl = image.transform(image.size, Image.AFFINE,
                                        (rot_m[0][0], rot_m[0][1], tl[0],
                                         rot_m[1][0], rot_m[1][1], tl[1]))
-
-        if not os.path.isdir(box_path):
-            os.mkdir(box_path)
 
         for question in reference_sheet.get_questions():
             for box in question.get_boxes():

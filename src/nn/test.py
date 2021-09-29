@@ -1,17 +1,18 @@
-from .dataset import create_bin_dataloader
-from .model import Model
 import json
+
+from nn.dataset import create_bin_dataloader
+from nn.model import Model
 
 
 def test(model : Model, positive_path, negative_path, metrics_path):
-    '''
+    """
     Test the Model of the NN 
     Args: 
         model : the model of the NN
         positive_path : path to test crossed boxes
         negative_path : path to test not-crossed boxes
         metrics_path : path to save test metrics
-    '''
+    """
     # Test Loader
     test_dataloader = create_bin_dataloader(positive_path, negative_path, 1)
 
@@ -56,10 +57,7 @@ def test(model : Model, positive_path, negative_path, metrics_path):
     else:    
         metrics["true negative rate"] = tn / (tn + fp)
 
-
     f = open(metrics_path, "w")
     f.write(json.dumps(metrics))
     f.close()
 
-
-        
