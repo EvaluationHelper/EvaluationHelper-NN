@@ -1,0 +1,2 @@
+This file exists to ensure that this empty directory can be pushed and won't be deleted by git automatically.
+In case the user wants to retrain the network the model, parameters used and metrics of the training run will be saved to this folder.
