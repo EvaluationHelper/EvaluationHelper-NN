@@ -100,7 +100,7 @@ def extractPath(path, path_boxes, path_sheet="Bogen", path_question="_question",
             box: box number
     """
     p = path.strip(path_boxes).strip(ext)
-    sheet = int(re.search(path_sheet + '(.*)' + path_question, p).group(1))
+    sheet = re.search(path_sheet + '(.*)' + path_question, p).group(1)
     question = int(re.search(path_question + '(.*)' + path_box, p).group(1))
     box = int(re.search(path_box + '(.*)', p).group(1))
     return sheet, question, box
@@ -137,7 +137,7 @@ def create_print_statistics(root, path):
     sheet_lst = []
     for box in sorted(lst):
         if not box[0] in [sheet.get_sheet() for sheet in sheet_lst]:
-            sheet_lst.append(StatisticsBox(box[0], box[1], box[2], box[3]))
+            sheet_lst.append(StatisticsBox(str(box[0]), box[1], box[2], box[3]))
         else:
             sheet_lst[len(sheet_lst) - 1].add_box(box[1], box[2], box[3])
     for sheet in sorted(sheet_lst, key=StatisticsBox.get_sheet):

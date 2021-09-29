@@ -87,6 +87,9 @@ def cut_boxes(corners_path, sheet_path, box_path, reference_json_path):
                                        (rot_m[0][0], rot_m[0][1], tl[0],
                                         rot_m[1][0], rot_m[1][1], tl[1]))
 
+        if not os.path.isdir(box_path):
+            os.mkdir(box_path)
+
         for question in reference_sheet.get_questions():
             for box in question.get_boxes():
                 __save_box__(image_rot_tl, box,
