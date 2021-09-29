@@ -18,7 +18,7 @@ def create_annotation(model, boxes_path='../../data/boxes/'):
     annotation  = []
 
     for f in os.listdir(boxes_path):
-        path = os.path.join(boxes_path,f)
+        path = os.path.normpath(os.path.join(boxes_path, f))
         image = np.array(Image.open(path))
 
         if image is None:
@@ -45,7 +45,7 @@ def save_annotation(annotation, annotation_dir='../../data'):
     Saves dictionary a a json file
     """
     print("Save Annotation ...")
-    annotations_path = os.path.join(annotation_dir, "annotation.json")
+    annotations_path = os.path.normpath(os.path.join(annotation_dir, "annotation.json"))
     f = open(annotations_path,"w")
     f.write(json.dumps(annotation))
     f.close
