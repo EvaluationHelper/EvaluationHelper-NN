@@ -31,7 +31,7 @@ def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_
     train_info = dict()
     train_info["num epochs"] = epochs
     train_info["batch size"] = batch_size
-    f = open(os.path.join(run_dir, "train_info.json"), "w")
+    f = open(os.path.normpath(os.path.join(run_dir, "train_info.json")), "w")
     f.write(json.dumps(train_info))
     f.close()
 
@@ -71,11 +71,11 @@ def train(positive_path, negative_path, batch_size, epochs, learning_rate, runs_
 
 
     # save_model
-    model_path = os.path.join(run_dir, "model.json")
+    model_path = os.path.normpath(os.path.join(run_dir, "model.json"))
     model.save_model(model_path)
 
     # test 
-    test(model, test_positive, test_negative, os.path.join(run_dir, "metrics.json"))
+    test(model, test_positive, test_negative, os.path.normpath(os.path.join(run_dir, "metrics.json")))
 
 
 if __name__ == '__main__':

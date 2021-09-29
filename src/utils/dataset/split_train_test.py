@@ -1,6 +1,7 @@
 import os
 import argparse
 
+
 def split_train_test(path_pos, path_neg, path_train, path_test, coef):
     '''
     Split dataset into train and test parts
@@ -24,10 +25,10 @@ def split_train_test(path_pos, path_neg, path_train, path_test, coef):
     neg_dir = os.path.basename(path_neg)
     os.mkdir(path_train)
     os.mkdir(path_test)    
-    os.mkdir(os.path.join(path_train, pos_dir))
-    os.mkdir(os.path.join(path_train, neg_dir))
-    os.mkdir(os.path.join(path_test, pos_dir))
-    os.mkdir(os.path.join(path_test, neg_dir))
+    os.mkdir(os.path.normpath(os.path.join(path_train, pos_dir)))
+    os.mkdir(os.path.normpath(os.path.join(path_train, neg_dir)))
+    os.mkdir(os.path.normpath(os.path.join(path_test, pos_dir)))
+    os.mkdir(os.path.normpath(os.path.join(path_test, neg_dir)))
     
     num_pos = len(os.listdir(path_pos))
     size_train_pos = int(num_pos * coef)
@@ -45,16 +46,20 @@ def split_train_test(path_pos, path_neg, path_train, path_test, coef):
         \nTest positive: {len(test_pos)}\nTest negative: {len(test_neg)}")
 
     for f in train_pos:
-        os.rename(os.path.join(path_pos, f), os.path.join(path_train, pos_dir, f))
+        os.rename(os.path.normpath(os.path.join(path_pos, f)),
+                  os.path.normpath(os.path.join(path_train, pos_dir, f)))
 
     for f in train_neg:
-        os.rename(os.path.join(path_neg, f), os.path.join(path_train, neg_dir, f))    
+        os.rename(os.path.normpath(os.path.join(path_neg, f)),
+                  os.path.normpath(os.path.join(path_train, neg_dir, f)))
 
     for f in test_pos:
-        os.rename(os.path.join(path_pos, f), os.path.join(path_test, pos_dir, f))
+        os.rename(os.path.normpath(os.path.join(path_pos, f)),
+                  os.path.normpath(os.path.join(path_test, pos_dir, f)))
 
     for f in test_neg:
-        os.rename(os.path.join(path_neg, f), os.path.join(path_test, neg_dir, f))        
+        os.rename(os.path.normpath(os.path.join(path_neg, f)),
+                  os.path.normpath(os.path.join(path_test, neg_dir, f)))
     
     
 if __name__ == '__main__':

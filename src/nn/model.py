@@ -20,7 +20,7 @@ class Model:
         self.b = np.random.standard_normal((2, 1))
         
     def load_model(self, model_path):
-        f = open(os.path.join(model_path, "model.json"), "r")
+        f = open(os.path.normpath(os.path.join(model_path, "model.json")), "r")
         model_data = json.load(f)
         self.W = np.array(model_data["W"])
         self.b = np.array(model_data["b"])

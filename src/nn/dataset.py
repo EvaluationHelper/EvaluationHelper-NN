@@ -53,10 +53,10 @@ def create_bin_dataloader(pos_data_path, neg_data_path, batch_size):
 
     paths_labeld = []
     for f in os.listdir(pos_data_path):
-        paths_labeld += [(os.path.join(pos_data_path, f), np.array([0, 1]))]
+        paths_labeld += [(os.path.normpath(os.path.join(pos_data_path, f)), np.array([0, 1]))]
 
     for f in os.listdir(neg_data_path):
-        paths_labeld += [(os.path.join(neg_data_path, f), np.array([1, 0]))]   
+        paths_labeld += [(os.path.normpath(os.path.join(neg_data_path, f)), np.array([1, 0]))]
 
     random.shuffle(paths_labeld)
     dataloader = DataLoader(paths_labeld, batch_size)
