@@ -89,6 +89,8 @@ python train.py -e 40 -b 60
 ```
 This will train the model with 40 epochs and batches of 60. To see all the possible arguments, look at the argparser in `train.py`'s main function.
 
+After training, your latest run will be saved to the `/data/runs/`directory. If you want the newly trained model to be used in launch.py, replace the `model.json` inside the `/data/` directory with the new `model.json` that was saved to the training run directory.
+
 ## Authors
 👤 Nikita Nesterov: https://github.com/SidanPukich
 
